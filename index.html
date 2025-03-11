@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Organizador com Ferramentas de IA</title>
+  <link rel="icon" href="https://example.com/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button id="themeToggle"><i class="fas fa-moon"></i> Alternar Tema</button>
+  <div class="app-container">
+    <div class="main-content">
+      <div class="notes-section" id="notesSection">
+        <h2>Anotações Rápidas</h2>
+        <textarea id="quickNotes" placeholder="Escreva suas notas aqui (Ctrl+S para salvar)..."></textarea>
+      </div>
+      <div class="tasks-section" id="tasksSection">
+        <h2>Minhas Tarefas</h2>
+        <input type="text" id="taskInput" placeholder="Digite uma nova tarefa...">
+        <ul class="tasks-list" id="tasksList"></ul>
+      </div>
+      <div class="table-section">
+        <h2>Tabela de Contratos</h2>
+        <div id="tableContainer"></div> <!-- Contêiner onde a tabela será inserida -->
+      </div>
+      <div class="container" id="buttonContainer">
+        <div class="category" data-id="card-direito" data-tags="direito" draggable="true">
+          <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
+          <h3>Direito</h3>
+          <p>Documentos jurídicos e pareceres</p>
+          <a href="onedrive://documentos_juridicos" target="_blank">Documentos Jurídicos</a>
+          <div class="subitems-container" data-subitem-id="card-direito">
+            <ul></ul>
+            <button class="add-subitem-btn">+ Subitem</button>
+          </div>
+        </div>
+        <div class="category" data-id="card-pessoal" data-tags="pessoal" draggable="true">
+          <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
+          <h3>Pessoal</h3>
+          <p>Documentos e fotos pessoais</p>
+          <a href="onedrive://fotos_e_documentos" target="_blank">Fotos e Documentos</a>
+          <div class="subitems-container" data-subitem-id="card-pessoal">
+            <ul></ul>
+            <button class="add-subitem-btn">+ Subitem</button>
+          </div>
+        </div>
+        <div class="category" data-id="card-economia" data-tags="economia" draggable="true">
+          <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
+          <h3>Economia/Investimentos</h3>
+          <p>Recursos financeiros</p>
+          <a href="onedrive://indice_de_economia" target="_blank">Índice de Economia</a>
+          <div class="subitems-container" data-subitem-id="card-economia">
+            <ul></ul>
+            <button class="add-subitem-btn">+ Subitem</button>
+          </div>
+        </div>
+        <div class="category" data-id="card-trabalho-tj" data-tags="trabalho-tj" draggable="true">
+          <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
+          <h3>Trabalho-TJ</h3>
+          <p>Documentos do Tribunal de Justiça</p>
+          <a href="onedrive://trabalho_tj" target="_blank">Documentos TJ</a>
+          <div class="subitems-container" data-subitem-id="card-trabalho-tj">
+            <ul></ul>
+            <button class="add-subitem-btn">+ Subitem</button>
+          </div>
+        </div>
+        <div class="category" data-id="card-ferramentas" data-tags="ferramentas" draggable="true">
+          <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
+          <h3>Ferramentas</h3>
+          <p>Ferramentas e utilitários</p>
+          <a href="onedrive://ferramentas" target="_blank">Ferramentas</a>
+          <div class="subitems-container" data-subitem-id="card-ferramentas">
+            <ul></ul>
+            <button class="add-subitem-btn">+ Subitem</button>
+          </div>
+        </div>
+      </div>
+      <div class="calendar-section" id="calendarSection">
+        <h2>Calendário</h2>
+        <div id="calendar"></div>
+      </div>
+      <button id="backToTop">Voltar ao topo</button>
+    </div>
+    <div id="secaoIA">
+      <h2>Ferramentas de IA</h2>
+      <div class="ia-buttons">
+        <button class="btnIA" onclick="mostrarIA('chatgpt')" title="Abrir ChatGPT">ChatGPT</button>
+        <button class="btnIA" onclick="mostrarIA('gemini')" title="Abrir Gemini">Gemini</button>
+        <button class="btnIA" onclick="mostrarIA('perplexity')" title="Abrir Perplexity">Perplexity</button>
+        <button class="btnIA" onclick="mostrarIA('copilot')" title="Abrir Copilot">Copilot</button>
+        <button class="btnIA" onclick="mostrarIA('deepseek')" title="Abrir DeepSeek">DeepSeek</button>
+        <button class="btnIA" onclick="mostrarIA('claude')" title="Abrir Claude">Claude</button>
+        <button class="btnIA" onclick="mostrarIA('grok')" title="Abrir Grok">Grok</button>
+        <button class="btnIA" onclick="mostrarIA('lechat')" title="Abrir Le Chat">Le Chat</button>
+        <button class="btnIA" onclick="mostrarIA('sabia')" title="Abrir Sabia">Sabia</button>
+        <button class="btnIA" onclick="mostrarIA('qwenchat')" title="Abrir Qwen">Qwen</button>
+        <button class="btnIA" onclick="mostrarIA('iadod')" title="Abrir Iadod">Iadod</button>
+      </div>
+      <div id="iframesContainer">
+        <div class="iframe-wrapper">
+          <h3>Perplexity</h3>
+          <iframe src="https://www.perplexity.ai/" title="Perplexity" loading="lazy" style="display: block;"></iframe>
+        </div>
+        <div class="iframe-wrapper">
+          <h3>Qwen</h3>
+          <iframe src="https://chat.qwen.ai/" title="Qwen" loading="lazy" style="display: block;"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+  <script>
+    (function(){
+      function c(){
+        var b=a.contentDocument||a.contentWindow.document;
+        if(b){
+          var d=b.createElement('script');
+          d.innerHTML="window.__CF$cv$params={r:'91ec7d6bf900029b',t:'MTc0MTcxMTE4Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+          b.getElementsByTagName('head')[0].appendChild(d);
+        }
+      }
+      if(document.body){
+        var a=document.createElement('iframe');
+        a.height=1;
+        a.width=1;
+        a.style.position='absolute';
+        a.style.top=0;
+        a.style.left=0;
+        a.style.border='none';
+        a.style.visibility='hidden';
+        document.body.appendChild(a);
+        if('loading'!==document.readyState)c();
+        else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);
+        else{var e=document.onreadystatechange||function(){};
+        document.onreadystatechange=function(b){
+          e(b);
+          'loading'!==document.readyState&&(document.onreadystatechange=e,c())
+        }
+      }
+    }
+    })();
+  </script>
+</body>
+</html>
