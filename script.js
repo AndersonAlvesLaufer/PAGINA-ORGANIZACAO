@@ -1,18 +1,31 @@
-function toggleTheme() {
-  const themes = ['light', 'dark', 'blue'];
-  let currentTheme = localStorage.getItem('theme') || 'light';
-  const nextIndex = (themes.indexOf(currentTheme) + 1) % themes.length;
-  currentTheme = themes[nextIndex];
-  document.body.classList.remove(...themes);
-  document.body.classList.add(currentTheme);
-  localStorage.setItem('theme', currentTheme);
+// Função de login
+function login() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  const storedHash = localStorage.getItem('authHash');
+  const hash = btoa(username + ':' + password);
+
+  if (!storedHash) {
+    if (username === 'admin' && password === 'segura123') {
+      localStorage.setItem('authHash', hash);
+      showMainContent();
+    } else {
+      alert('Usuário ou senha incorretos na primeira configuração!');
+    }
+  } else if (storedHash === hash) {
+    showMainContent();
+  } else {
+    alert('Usuário ou senha incorretos!');
+  }
 }
 
-let cardOrder = [];
-let pinnedItems = [];
-let subitemsData = [];
+function showMainContent() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'block';
+  initializeApp();
+}
 
-document.addEventListener('DOMContentLoaded', () => {
+function initializeApp() {
   const savedTheme = localStorage.getItem('theme') || 'light';
   document.body.classList.add(savedTheme);
 
@@ -28,19 +41,13 @@ document.addEventListener('DOMContentLoaded', () => {
   reorderCards();
   initSubitemsAll();
   initCalendar();
-  loadTable(); // Certifique-se de que loadTable está sendo chamado
+  initEditableTable();
 
   document.getElementById('themeToggle').addEventListener('click', toggleTheme);
   document.getElementById('quickNotes').addEventListener('input', () => {
     localStorage.setItem('quickNotes', document.getElementById('quickNotes').value);
   });
-  document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.key === 's') {
-      e.preventDefault();
-      localStorage.setItem('quickNotes', document.getElementById('quickNotes').value);
-      alert('Anotações salvas!');
-    }
-  });
+  document.addEventListener('keydown', handleShortcuts);
 
   const taskInput = document.getElementById('taskInput');
   const tasksList = document.getElementById('tasksList');
@@ -55,7 +62,31 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.getElementById('backToTop').addEventListener('click', scrollToTop);
-});
+  checkProrrogacaoWarnings();
+  checkTodayEvents();
+}
+
+window.onload = function() {
+  if (!localStorage.getItem('authHash')) {
+    document.getElementById('loginScreen').style.display = 'block';
+  } else {
+    showMainContent();
+  }
+};
+
+function toggleTheme() {
+  const themes = ['light', 'dark', 'blue'];
+  let currentTheme = localStorage.getItem('theme') || 'light';
+  const nextIndex = (themes.indexOf(currentTheme) + 1) % themes.length;
+  currentTheme = themes[nextIndex];
+  document.body.classList.remove(...themes);
+  document.body.classList.add(currentTheme);
+  localStorage.setItem('theme', currentTheme);
+}
+
+let cardOrder = [];
+let pinnedItems = [];
+let subitemsData = [];
 
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -154,6 +185,7 @@ function loadTasks() {
   const tasksList = document.getElementById('tasksList');
   if (!tasksList) return;
   const savedTasks = JSON.parse(localStorage.getItem('tasksList') || '[]');
+  tasksList.innerHTML = '';
   savedTasks.forEach(task => {
     const li = document.createElement('li');
     li.innerHTML = `<span>${task}</span><button class="remove-task"><i class="fas fa-trash"></i></button>`;
@@ -171,9 +203,10 @@ function initSubitemsAll() {
 
     addBtn.addEventListener('click', () => {
       const subitemName = prompt('Nome do subitem:')?.trim();
-      if (!subitemName || (subitemsData[catId] && subitemsData[catId].includes(subitemName))) return;
+      const subitemLink = prompt('Link do subitem (ex.: onedrive://caminho):')?.trim();
+      if (!subitemName || !subitemLink || (subitemsData[catId] && subitemsData[catId].some(item => item.name === subitemName))) return;
       if (!subitemsData[catId]) subitemsData[catId] = [];
-      subitemsData[catId].push(subitemName);
+      subitemsData[catId].push({ name: subitemName, link: subitemLink });
       saveSubitemsData();
       renderSubitems(catId, ul);
     });
@@ -197,58 +230,243 @@ function renderSubitems(catId, ul) {
   const items = subitemsData[catId] || [];
   items.forEach((item, idx) => {
     const li = document.createElement('li');
-    li.innerHTML = `<span>${item}</span><button class="remove-subitem" data-index="${idx}"><i class="fas fa-times"></i></button>`;
+    li.innerHTML = `<a href="${item.link}" target="_blank">${item.name}</a><button class="remove-subitem" data-index="${idx}"><i class="fas fa-times"></i></button>`;
     ul.appendChild(li);
   });
-}
-
-function loadTable() {
-  const tableContainer = document.getElementById('tableContainer');
-  if (!tableContainer) return;
-
-  // Carrega o conteúdo de tabela.html
-  fetch('tabela.html')
-    .then(response => {
-      if (!response.ok) throw new Error('Erro ao carregar tabela.html');
-      return response.text();
-    })
-    .then(html => {
-      tableContainer.innerHTML = html; // Insere a tabela no contêiner
-      initEditableTable(); // Inicializa a funcionalidade de edição
-    })
-    .catch(error => {
-      console.error('Erro ao carregar a tabela:', error);
-      tableContainer.innerHTML = '<p>Erro ao carregar a tabela. Verifique o arquivo tabela.html.</p>';
-    });
 }
 
 function initEditableTable() {
   const table = document.getElementById('editableTable');
   if (!table) return;
 
-  // Carrega dados salvos do localStorage
   const savedData = JSON.parse(localStorage.getItem('tableData') || '[]');
   if (savedData.length > 0) {
     const tbody = table.querySelector('tbody');
-    tbody.innerHTML = ''; // Limpa as linhas atuais
+    tbody.innerHTML = '';
     savedData.forEach(row => {
       const tr = document.createElement('tr');
-      row.forEach(cell => {
+      row.forEach((cell, idx) => {
         const td = document.createElement('td');
-        td.setAttribute('contenteditable', 'true');
-        td.textContent = cell;
+        if (idx === 3) { // Coluna Prorrogação
+          const dateInput = document.createElement('input');
+          dateInput.type = 'date';
+          dateInput.className = 'prorrogacao-date';
+          dateInput.value = typeof cell === 'object' && cell.text ? cell.text.match(/\d{4}-\d{2}-\d{2}/)?.[0] || '' : cell || '';
+          td.appendChild(dateInput);
+        } else {
+          td.setAttribute('contenteditable', idx !== 3 ? 'true' : 'false');
+          if (typeof cell === 'object' && cell.text) {
+            td.innerHTML = cell.text;
+            if (cell.bold) td.querySelector('span').style.fontWeight = 'bold';
+            if (cell.color) td.querySelector('span').style.color = cell.color;
+          } else {
+            td.textContent = cell;
+          }
+        }
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
     });
   }
 
-  // Salva as alterações no localStorage ao editar
   table.addEventListener('input', () => {
-    const rows = Array.from(table.querySelectorAll('tbody tr'));
-    const data = rows.map(row => Array.from(row.querySelectorAll('td')).map(td => td.textContent));
-    localStorage.setItem('tableData', JSON.stringify(data));
+    document.getElementById('updateTableBtn').style.display = 'inline-block';
   });
+
+  table.querySelectorAll('.prorrogacao-date').forEach(input => {
+    input.addEventListener('change', () => {
+      document.getElementById('updateTableBtn').style.display = 'inline-block';
+      syncProrrogacaoToCalendar(input.value, input.closest('tr').rowIndex - 1);
+    });
+  });
+
+  table.addEventListener('click', () => updateSelection());
+  table.addEventListener('keyup', () => updateSelection());
+}
+
+function updateSelection() {
+  const selection = window.getSelection();
+  if (selection.rangeCount > 0) {
+    const range = selection.getRangeAt(0);
+    const editable = range.commonAncestorContainer.parentElement.closest('[contenteditable="true"]');
+    if (editable) {
+      document.getElementById('tableFormattingTools').dataset.activeCell = editable;
+    }
+  }
+}
+
+function applyBold() {
+  const activeCell = document.querySelector('#tableFormattingTools').dataset.activeCell;
+  if (activeCell) {
+    const cell = document.querySelector(activeCell);
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      const selectedText = range.extractContents();
+      const span = document.createElement('span');
+      span.style.fontWeight = 'bold';
+      span.appendChild(selectedText);
+      range.insertNode(span);
+      document.getElementById('updateTableBtn').style.display = 'inline-block';
+    }
+  }
+}
+
+function applyRed() {
+  const activeCell = document.querySelector('#tableFormattingTools').dataset.activeCell;
+  if (activeCell) {
+    const cell = document.querySelector(activeCell);
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      const selectedText = range.extractContents();
+      const span = document.createElement('span');
+      span.style.color = 'red';
+      span.appendChild(selectedText);
+      range.insertNode(span);
+      document.getElementById('updateTableBtn').style.display = 'inline-block';
+    }
+  }
+}
+
+function applyBlue() {
+  const activeCell = document.querySelector('#tableFormattingTools').dataset.activeCell;
+  if (activeCell) {
+    const cell = document.querySelector(activeCell);
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      const selectedText = range.extractContents();
+      const span = document.createElement('span');
+      span.style.color = 'blue';
+      span.appendChild(selectedText);
+      range.insertNode(span);
+      document.getElementById('updateTableBtn').style.display = 'inline-block';
+    }
+  }
+}
+
+function markImportant() {
+  const activeCell = document.querySelector('#tableFormattingTools').dataset.activeCell;
+  if (activeCell) {
+    const cell = document.querySelector(activeCell);
+    cell.style.backgroundColor = cell.style.backgroundColor === 'yellow' ? '' : 'yellow';
+    document.getElementById('updateTableBtn').style.display = 'inline-block';
+  }
+}
+
+function handleShortcuts(e) {
+  if (e.target.closest('#editableTable')) {
+    if (e.ctrlKey) {
+      if (e.key === 'b') {
+        e.preventDefault();
+        applyBold();
+      } else if (e.key === 'r') {
+        e.preventDefault();
+        applyRed();
+      } else if (e.key === 'l') {
+        e.preventDefault();
+        applyBlue();
+      }
+    }
+  }
+}
+
+function addRow() {
+  const table = document.getElementById('editableTable');
+  const tbody = table.querySelector('tbody');
+  const newRow = document.createElement('tr');
+  const colCount = table.querySelector('thead tr').cells.length;
+  for (let i = 0; i < colCount; i++) {
+    const td = document.createElement('td');
+    if (i === 3) { // Coluna Prorrogação
+      const dateInput = document.createElement('input');
+      dateInput.type = 'date';
+      dateInput.className = 'prorrogacao-date';
+      dateInput.value = '';
+      td.appendChild(dateInput);
+      dateInput.addEventListener('change', () => {
+        document.getElementById('updateTableBtn').style.display = 'inline-block';
+        syncProrrogacaoToCalendar(dateInput.value, tbody.rows.length);
+      });
+    } else {
+      td.setAttribute('contenteditable', i !== 3 ? 'true' : 'false');
+      td.textContent = '';
+    }
+    newRow.appendChild(td);
+  }
+  tbody.appendChild(newRow);
+  document.getElementById('updateTableBtn').style.display = 'inline-block';
+}
+
+function removeRow() {
+  const table = document.getElementById('editableTable');
+  const tbody = table.querySelector('tbody');
+  if (tbody.rows.length > 0) {
+    tbody.deleteRow(-1);
+    document.getElementById('updateTableBtn').style.display = 'inline-block';
+  }
+}
+
+function addColumn() {
+  const table = document.getElementById('editableTable');
+  const thead = table.querySelector('thead tr');
+  const tbody = table.querySelector('tbody');
+
+  const th = document.createElement('th');
+  th.textContent = `Nova Coluna ${thead.cells.length + 1}`;
+  th.style.padding = '12px';
+  th.style.border = '1px solid #ddd';
+  thead.appendChild(th);
+
+  Array.from(tbody.rows).forEach(row => {
+    const td = document.createElement('td');
+    td.setAttribute('contenteditable', true);
+    td.textContent = '';
+    td.style.padding = '10px';
+    td.style.border = '1px solid #ddd';
+    row.appendChild(td);
+  });
+
+  document.getElementById('updateTableBtn').style.display = 'inline-block';
+}
+
+function removeColumn() {
+  const table = document.getElementById('editableTable');
+  const thead = table.querySelector('thead tr');
+  const tbody = table.querySelector('tbody');
+
+  if (thead.cells.length > 1) {
+    thead.deleteCell(-1);
+    Array.from(tbody.rows).forEach(row => row.deleteCell(-1));
+    document.getElementById('updateTableBtn').style.display = 'inline-block';
+  }
+}
+
+function saveTableData() {
+  const table = document.getElementById('editableTable');
+  const rows = Array.from(table.querySelectorAll('tbody tr'));
+  const data = rows.map(row => {
+    return Array.from(row.querySelectorAll('td')).map((td, idx) => {
+      if (idx === 3) { // Coluna Prorrogação
+        const dateInput = td.querySelector('.prorrogacao-date');
+        return dateInput ? dateInput.value : '';
+      }
+      const spans = td.querySelectorAll('span');
+      if (spans.length > 0) {
+        return {
+          text: td.innerHTML,
+          bold: spans[0].style.fontWeight === 'bold',
+          color: spans[0].style.color || '',
+          background: td.style.backgroundColor || ''
+        };
+      }
+      return td.textContent;
+    });
+  });
+  localStorage.setItem('tableData', JSON.stringify(data));
+  document.getElementById('updateTableBtn').style.display = 'none';
+  syncAllProrrogacoesToCalendar();
 }
 
 function saveSubitemsData() { localStorage.setItem('subitemsData', JSON.stringify(subitemsData)); }
@@ -256,17 +474,258 @@ function saveSubitemsData() { localStorage.setItem('subitemsData', JSON.stringif
 function initCalendar() {
   const calendarEl = document.getElementById('calendar');
   if (!calendarEl) return;
+
   const calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'dayGridMonth',
-    height: '300px',
+    height: 'auto',
     headerToolbar: {
-      left: 'prev,next',
+      left: 'prev,next today',
       center: 'title',
-      right: ''
+      right: 'dayGridMonth,timeGridWeek,timeGridDay'
     },
-    events: []
+    editable: true,
+    selectable: true,
+    select: function(info) {
+      const title = prompt('Digite o título do evento:');
+      if (title) {
+        calendar.addEvent({
+          id: Date.now().toString(),
+          title: title,
+          start: info.start,
+          end: info.end || info.start,
+          allDay: info.allDay
+        });
+        saveCalendarEvents();
+      }
+    },
+    eventClick: function(info) {
+      openEventPopup(info.event);
+    },
+    eventDrop: function(info) {
+      saveCalendarEvents();
+    },
+    eventResize: function(info) {
+      saveCalendarEvents();
+    },
+    events: JSON.parse(localStorage.getItem('calendarEvents') || '[]')
   });
   calendar.render();
+}
+
+function openEventPopup(event) {
+  const popup = document.getElementById('eventPopup');
+  const overlay = document.getElementById('overlay');
+  const eventTitle = document.getElementById('eventTitle');
+  const eventInput = document.getElementById('eventInput');
+  const eventStart = document.getElementById('eventStart');
+  const eventEnd = document.getElementById('eventEnd');
+  const eventDescription = document.getElementById('eventDescription');
+
+  eventTitle.textContent = event.title;
+  eventInput.value = event.title;
+  eventStart.value = event.start.toISOString().slice(0, 16);
+  eventEnd.value = event.end ? event.end.toISOString().slice(0, 16) : event.start.toISOString().slice(0, 16);
+  eventDescription.value = event.extendedProps.description || '';
+
+  popup.dataset.eventId = event.id;
+  popup.style.display = 'block';
+  overlay.style.display = 'block';
+}
+
+function saveEvent() {
+  const popup = document.getElementById('eventPopup');
+  const calendar = document.querySelector('#calendar').__calendar; // Correção para acessar o calendário
+  const eventId = popup.dataset.eventId;
+  const eventInput = document.getElementById('eventInput').value;
+  const eventStart = new Date(document.getElementById('eventStart').value);
+  const eventEnd = new Date(document.getElementById('eventEnd').value);
+  const eventDescription = document.getElementById('eventDescription').value;
+
+  let event = calendar.getEventById(eventId);
+  if (event) {
+    event.setProp('title', eventInput);
+    event.setStart(eventStart);
+    event.setEnd(eventEnd);
+    event.setExtendedProp('description', eventDescription);
+  } else {
+    calendar.addEvent({
+      id: Date.now().toString(),
+      title: eventInput,
+      start: eventStart,
+      end: eventEnd,
+      allDay: !eventEnd || eventStart.toDateString() === eventEnd.toDateString(),
+      description: eventDescription
+    });
+  }
+  closePopup();
+  saveCalendarEvents();
+}
+
+function deleteEvent() {
+  const popup = document.getElementById('eventPopup');
+  const calendar = document.querySelector('#calendar').__calendar; // Correção para acessar o calendário
+  const eventId = popup.dataset.eventId;
+  const event = calendar.getEventById(eventId);
+  if (event) {
+    event.remove();
+    saveCalendarEvents();
+  }
+  closePopup();
+}
+
+function closePopup() {
+  const popup = document.getElementById('eventPopup');
+  const overlay = document.getElementById('overlay');
+  popup.style.display = 'none';
+  overlay.style.display = 'none';
+  popup.dataset.eventId = '';
+}
+
+function saveCalendarEvents() {
+  const calendar = document.querySelector('#calendar').__calendar; // Correção para acessar o calendário
+  const events = calendar.getEvents().map(event => ({
+    id: event.id,
+    title: event.title,
+    start: event.start.toISOString(),
+    end: event.end ? event.end.toISOString() : null,
+    allDay: event.allDay,
+    description: event.extendedProp('description') || ''
+  }));
+  localStorage.setItem('calendarEvents', JSON.stringify(events));
+}
+
+function addCategory() {
+  const name = prompt('Nome da nova categoria:');
+  const tags = prompt('Tags (separadas por vírgula):');
+  const link = prompt('Link (ex.: onedrive://caminho):');
+  if (!name || !link) return;
+
+  const container = document.getElementById('buttonContainer');
+  const category = document.createElement('div');
+  category.className = 'category';
+  category.dataset.id = `card-${name.toLowerCase().replace(/\s+/g, '-')}`;
+  category.dataset.tags = tags || '';
+  category.draggable = true;
+  category.innerHTML = `
+    <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
+    <h3>${name}</h3>
+    <p>${name} descrição</p>
+    <a href="${link}" target="_blank">${name}</a>
+    <div class="subitems-container" data-subitem-id="card-${name.toLowerCase().replace(/\s+/g, '-')}">
+      <ul></ul>
+      <button class="add-subitem-btn">+ Subitem</button>
+    </div>
+  `;
+  container.appendChild(category);
+  initCards();
+  saveCardOrder();
+}
+
+function removeCategory() {
+  const container = document.getElementById('buttonContainer');
+  const categories = container.querySelectorAll('.category');
+  if (categories.length > 0) {
+    const lastCategory = categories[categories.length - 1];
+    const confirmRemove = confirm(`Deseja remover a categoria "${lastCategory.querySelector('h3').textContent}"?`);
+    if (confirmRemove) {
+      const cardId = lastCategory.dataset.id;
+      removeIdFromArray(cardId, cardOrder);
+      removeIdFromArray(cardId, pinnedItems);
+      lastCategory.remove();
+      saveCardOrder();
+      savePinnedItems();
+      delete subitemsData[cardId];
+      saveSubitemsData();
+    }
+  }
+}
+
+function syncProrrogacaoToCalendar(date, rowIndex) {
+  const calendar = document.querySelector('#calendar').__calendar;
+  if (date) {
+    const eventId = `prorrogacao-${rowIndex}`;
+    let event = calendar.getEventById(eventId);
+    if (event) event.remove();
+    calendar.addEvent({
+      id: eventId,
+      title: `Prorrogação - Linha ${rowIndex + 1}`,
+      start: date,
+      allDay: true
+    });
+    saveCalendarEvents();
+  }
+}
+
+function syncAllProrrogacoesToCalendar() {
+  const table = document.getElementById('editableTable');
+  const prorrogacoes = table.querySelectorAll('.prorrogacao-date');
+  const calendar = document.querySelector('#calendar').__calendar;
+  calendar.getEvents().forEach(event => {
+    if (event.id.startsWith('prorrogacao-')) event.remove();
+  });
+  prorrogacoes.forEach((input, index) => {
+    if (input.value) {
+      calendar.addEvent({
+        id: `prorrogacao-${index}`,
+        title: `Prorrogação - Linha ${index + 1}`,
+        start: input.value,
+        allDay: true
+      });
+    }
+  });
+  saveCalendarEvents();
+}
+
+function checkProrrogacaoWarnings() {
+  const table = document.getElementById('editableTable');
+  const prorrogacoes = table.querySelectorAll('.prorrogacao-date');
+  const tasksList = document.getElementById('tasksList');
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  prorrogacoes.forEach((input, index) => {
+    if (input.value) {
+      const prorrogacaoDate = new Date(input.value);
+      const twoMonthsBefore = new Date(prorrogacaoDate);
+      twoMonthsBefore.setMonth(twoMonthsBefore.getMonth() - 2);
+      const oneMonthBefore = new Date(prorrogacaoDate);
+      oneMonthBefore.setMonth(oneMonthBefore.getMonth() - 1);
+
+      if (today >= twoMonthsBefore && today < prorrogacaoDate) {
+        addWarningTask(`Aviso: Prorrogação (Linha ${index + 1}) em 2 meses - ${prorrogacaoDate.toLocaleDateString()}`, true);
+      } else if (today >= oneMonthBefore && today < prorrogacaoDate) {
+        addWarningTask(`Aviso: Prorrogação (Linha ${index + 1}) em 1 mês - ${prorrogacaoDate.toLocaleDateString()}`, true);
+      }
+    }
+  });
+}
+
+function checkTodayEvents() {
+  const calendar = document.querySelector('#calendar').__calendar;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const events = calendar.getEvents().filter(event => {
+    const eventDate = new Date(event.start);
+    eventDate.setHours(0, 0, 0, 0);
+    return eventDate.toDateString() === today.toDateString();
+  });
+
+  events.forEach(event => {
+    if (!event.id.startsWith('prorrogacao-')) {
+      addWarningTask(`Evento Hoje: ${event.title}`, true);
+    }
+  });
+}
+
+function addWarningTask(text, isWarning) {
+  const tasksList = document.getElementById('tasksList');
+  const existingTasks = Array.from(tasksList.querySelectorAll('li')).map(li => li.querySelector('span').textContent);
+  if (!existingTasks.includes(text)) {
+    const li = document.createElement('li');
+    li.innerHTML = `<span style="color: ${isWarning ? 'red' : 'black'}">${text}</span><button class="remove-task"><i class="fas fa-trash"></i></button>`;
+    tasksList.appendChild(li);
+    saveTasks();
+  }
 }
 
 let iaAbas = {};
@@ -345,7 +804,6 @@ function mostrarIA(nomeIA) {
   }
 }
 
-// Função para atualizar o estado ativo dos botões (adicionada para evitar erros)
 function atualizarBotaoAtivo(nomeIA, ativo) {
   const botao = document.querySelector(`.btnIA[onclick*="mostrarIA('${nomeIA}')"]`);
   if (botao) {
