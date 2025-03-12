@@ -19,6 +19,57 @@ function login() {
   }
 }
 
+// Dados de exemplo – esses dados podem ser carregados de uma API ou arquivo JSON futuramente
+const contratos = [
+  { sei: "0060404-14.2018.8.16.6000", contrato: "369/2019 (Digitalização)", empresa: "UNILEHU", prorrogacao: "", pendencias: "Aguardar providências arquivamento" },
+  { sei: "0032440-07.2022.8.16.6000", contrato: "140/2022 (Telefonista, Recepcionista e Copeiragem)", empresa: "CENTRALLIMP", prorrogacao: "2026-02-03", pendencias: "" },
+  { sei: "0072326-81.2020.8.16.6000", contrato: "249/2020 – Correios", empresa: "Correios", prorrogacao: "2025-11-01", pendencias: "" }
+  // ... adicione os demais registros conforme necessário
+];
+
+function renderTabelaContratos() {
+  // Obtém o container onde a tabela será injetada (verifique que no index.html você substituiu a tabela fixa por <div id="tabelaContainer"></div>)
+  const container = document.getElementById('tabelaContainer');
+
+  let html = `
+    <table id="editableTable">
+      <thead>
+        <tr>
+          <th>SEI</th>
+          <th>CONTRATO</th>
+          <th>EMPRESA</th>
+          <th>PRORROGAÇÃO</th>
+          <th>PENDÊNCIAS</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  // Para cada contrato, adiciona uma linha na tabela
+  contratos.forEach(item => {
+    html += `
+      <tr>
+        <td contenteditable="true"><strong>${item.sei}</strong></td>
+        <td contenteditable="true">${item.contrato}</td>
+        <td contenteditable="true">${item.empresa}</td>
+        <td><input type="date" class="prorrogacao-date" value="${item.prorrogacao}" /></td>
+        <td contenteditable="true">${item.pendencias}</td>
+      </tr>
+    `;
+  });
+
+  html += `
+      </tbody>
+    </table>
+  `;
+
+  // Injeta o HTML gerado no container
+  container.innerHTML = html;
+
+  // Chama a função que adiciona os eventos necessários na tabela (caso já implementados)
+  initEditableTable();
+}
+
 function showMainContent() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('mainContent').style.display = 'block';
@@ -41,6 +92,7 @@ function initializeApp() {
   reorderCards();
   initSubitemsAll();
   initCalendar();
+  renderTabelaContratos();
   initEditableTable();
 
   document.getElementById('themeToggle').addEventListener('click', toggleTheme);
@@ -86,7 +138,7 @@ function toggleTheme() {
 
 let cardOrder = [];
 let pinnedItems = [];
-let subitemsData = [];
+let subitemsData = {};
 
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -111,8 +163,11 @@ function initCards() {
     const draggedItem = document.querySelector('.dragging');
     if (!draggedItem) return;
     const afterElement = getDragAfterElement(container, e.clientY);
-    if (!afterElement) container.appendChild(draggedItem);
-    else container.insertBefore(draggedItem, afterElement);
+    if (!afterElement) {
+      container.appendChild(draggedItem);
+    } else {
+      container.insertBefore(draggedItem, afterElement);
+    }
   });
 }
 
@@ -121,7 +176,9 @@ function getDragAfterElement(container, y) {
   return draggableElements.reduce((closest, child) => {
     const box = child.getBoundingClientRect();
     const offset = y - box.top - box.height / 2;
-    if (offset < 0 && offset > closest.offset) return { offset: offset, element: child };
+    if (offset < 0 && offset > closest.offset) {
+      return { offset: offset, element: child };
+    }
     return closest;
   }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
@@ -156,8 +213,12 @@ function updateCardOrderArray() {
   cardOrder = Array.from(cards).map(card => card.dataset.id);
 }
 
-function saveCardOrder() { localStorage.setItem('cardOrder', JSON.stringify(cardOrder)); }
-function savePinnedItems() { localStorage.setItem('pinnedItems', JSON.stringify(pinnedItems)); }
+function saveCardOrder() {
+  localStorage.setItem('cardOrder', JSON.stringify(cardOrder));
+}
+function savePinnedItems() {
+  localStorage.setItem('pinnedItems', JSON.stringify(pinnedItems));
+}
 function removeIdFromArray(id, arr) {
   const index = arr.indexOf(id);
   if (index !== -1) arr.splice(index, 1);
@@ -251,7 +312,9 @@ function initEditableTable() {
           const dateInput = document.createElement('input');
           dateInput.type = 'date';
           dateInput.className = 'prorrogacao-date';
-          dateInput.value = typeof cell === 'object' && cell.text ? cell.text.match(/\d{4}-\d{2}-\d{2}/)?.[0] || '' : cell || '';
+          dateInput.value = (typeof cell === 'object' && cell.text)
+            ? cell.text.match(/\d{4}-\d{2}-\d{2}/)?.[0] || ''
+            : cell || '';
           td.appendChild(dateInput);
         } else {
           td.setAttribute('contenteditable', idx !== 3 ? 'true' : 'false');
@@ -469,7 +532,9 @@ function saveTableData() {
   syncAllProrrogacoesToCalendar();
 }
 
-function saveSubitemsData() { localStorage.setItem('subitemsData', JSON.stringify(subitemsData)); }
+function saveSubitemsData() {
+  localStorage.setItem('subitemsData', JSON.stringify(subitemsData));
+}
 
 function initCalendar() {
   const calendarEl = document.getElementById('calendar');
@@ -510,6 +575,8 @@ function initCalendar() {
     events: JSON.parse(localStorage.getItem('calendarEvents') || '[]')
   });
   calendar.render();
+  // Armazena o calendário no DOM para acesso pelas funções (por exemplo, __calendar)
+  document.querySelector('#calendar').__calendar = calendar;
 }
 
 function openEventPopup(event) {
@@ -534,7 +601,7 @@ function openEventPopup(event) {
 
 function saveEvent() {
   const popup = document.getElementById('eventPopup');
-  const calendar = document.querySelector('#calendar').__calendar; // Correção para acessar o calendário
+  const calendar = document.querySelector('#calendar').__calendar;
   const eventId = popup.dataset.eventId;
   const eventInput = document.getElementById('eventInput').value;
   const eventStart = new Date(document.getElementById('eventStart').value);
@@ -563,7 +630,7 @@ function saveEvent() {
 
 function deleteEvent() {
   const popup = document.getElementById('eventPopup');
-  const calendar = document.querySelector('#calendar').__calendar; // Correção para acessar o calendário
+  const calendar = document.querySelector('#calendar').__calendar;
   const eventId = popup.dataset.eventId;
   const event = calendar.getEventById(eventId);
   if (event) {
@@ -582,7 +649,7 @@ function closePopup() {
 }
 
 function saveCalendarEvents() {
-  const calendar = document.querySelector('#calendar').__calendar; // Correção para acessar o calendário
+  const calendar = document.querySelector('#calendar').__calendar;
   const events = calendar.getEvents().map(event => ({
     id: event.id,
     title: event.title,
@@ -728,9 +795,37 @@ function addWarningTask(text, isWarning) {
   }
 }
 
+// ====================================================
+// INTEGRAÇÃO COM INTELIGÊNCIA ARTIFICIAL (IA)
+// ====================================================
+
+// Variável global para armazenar janelas abertas de IA
 let iaAbas = {};
 
-function mostrarIA(nomeIA) {
+// Função para exibir uma interface de IA (ex.: chatgpt, gemini, perplexity, etc.)
+// Agora recebe também o elemento do botão (btn) para que possamos manipulá-lo.
+function mostrarIA(nomeIA, btn) {
+  // Se o botão já estiver desabilitado, não faz nada.
+  if (btn.disabled) return;
+
+  // DESABILITA o botão: torna-o transparente e inacessível
+  btn.disabled = true;
+  btn.classList.add('disabled'); // a classe 'disabled' será definida no CSS
+
+  // CRIA um botão "restaurar" que, quando clicado, reativa o botão original
+  var restoreBtn = document.createElement('button');
+  restoreBtn.textContent = "Restaurar";
+  restoreBtn.className = "btnRestaurar";
+  restoreBtn.onclick = function() {
+    // Reativa o botão original
+    btn.disabled = false;
+    btn.classList.remove('disabled');
+    // Remove o botão "restaurar" do DOM
+    restoreBtn.parentNode.removeChild(restoreBtn);
+  };
+  // Insere o botão "restaurar" imediatamente após o botão da IA
+  btn.parentNode.insertBefore(restoreBtn, btn.nextSibling);
+
   const urls = {
     'chatgpt': "https://chatgpt.com/",
     'gemini': "https://gemini.google.com",
@@ -748,6 +843,7 @@ function mostrarIA(nomeIA) {
   const url = urls[nomeIA];
   if (!url) return console.error("IA não reconhecida:", nomeIA);
 
+  // Tratamento especial para a IA 'perplexity' usando iframe
   if (nomeIA === 'perplexity') {
     const iframesContainer = document.getElementById('iframesContainer');
     let iframe = Array.from(iframesContainer.querySelectorAll('iframe')).find(f => f.title.toLowerCase() === 'perplexity');
@@ -758,11 +854,11 @@ function mostrarIA(nomeIA) {
       iframe.setAttribute('loading', 'lazy');
       iframesContainer.appendChild(iframe);
     }
-    iframesContainer.querySelectorAll('iframe').forEach(f => f.style.display = f === iframe ? 'block' : 'none');
-    atualizarBotaoAtivo(nomeIA, true);
+    iframesContainer.querySelectorAll('iframe').forEach(f => f.style.display = (f === iframe) ? 'block' : 'none');
     return;
   }
 
+  // Tratamento especial para a IA 'qwenchat' usando iframe
   if (nomeIA === 'qwenchat') {
     const iframesContainer = document.getElementById('iframesContainer');
     let iframe = Array.from(iframesContainer.querySelectorAll('iframe')).find(f => f.title.toLowerCase() === 'qwen');
@@ -774,39 +870,28 @@ function mostrarIA(nomeIA) {
       iframe.setAttribute('loading', 'lazy');
       iframesContainer.appendChild(iframe);
     }
-    iframesContainer.querySelectorAll('iframe').forEach(f => f.style.display = f === iframe ? 'block' : 'none');
-    atualizarBotaoAtivo(nomeIA, true);
+    iframesContainer.querySelectorAll('iframe').forEach(f => f.style.display = (f === iframe) ? 'block' : 'none');
     return;
   }
 
+  // Para outras IAs, abre em uma nova janela
   const windowName = `iaWindow_${nomeIA}`;
   let iaWindow = window.open('', windowName);
   if (iaWindow && iaWindow.location.href === 'about:blank') {
     iaWindow.location.href = url;
   } else if (iaWindow && !iaWindow.closed) {
     iaWindow.focus();
-    atualizarBotaoAtivo(nomeIA, true);
     iaAbas[nomeIA] = iaWindow;
     return;
   }
-
   iaWindow = window.open(url, windowName, `width=800,height=600,left=${window.screenX + 50},top=${window.screenY + 50}`);
   if (iaWindow) {
     iaAbas[nomeIA] = iaWindow;
-    atualizarBotaoAtivo(nomeIA, true);
     const checkInterval = setInterval(() => {
       if (iaAbas[nomeIA]?.closed) {
         clearInterval(checkInterval);
         delete iaAbas[nomeIA];
-        atualizarBotaoAtivo(nomeIA, false);
       }
     }, 1000);
-  }
-}
-
-function atualizarBotaoAtivo(nomeIA, ativo) {
-  const botao = document.querySelector(`.btnIA[onclick*="mostrarIA('${nomeIA}')"]`);
-  if (botao) {
-    botao.classList.toggle('active', ativo);
   }
 }
