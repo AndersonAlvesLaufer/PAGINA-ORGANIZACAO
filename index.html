@@ -1,121 +1,63 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Organizador com Ferramentas de IA</title>
-  <link rel="icon" href="https://example.com/favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css">
+  <link rel="icon" href="https://example.com/favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" />
 </head>
 <body>
-  <div id="loginScreen" style="display: block; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000;">
-    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+  <!-- Tela de Login -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-box">
       <h2>Login</h2>
-      <input type="text" id="username" placeholder="Usuário" style="width: 100%; padding: 8px; margin: 10px 0;">
-      <input type="password" id="password" placeholder="Senha" style="width: 100%; padding: 8px; margin: 10px 0;">
-      <button onclick="login()" style="padding: 8px 16px; background-color: #4a90e2; color: white; border: none; border-radius: 4px; cursor: pointer;">Entrar</button>
+      <input type="text" id="username" placeholder="Usuário" class="login-input" />
+      <input type="password" id="password" placeholder="Senha" class="login-input" />
+      <button onclick="login()" class="login-btn">Entrar</button>
     </div>
   </div>
-  <div id="mainContent" style="display: none;">
+
+  <!-- Conteúdo Principal -->
+  <div id="mainContent" class="main-content-wrapper">
     <button id="themeToggle"><i class="fas fa-moon"></i> Alternar Tema</button>
     <div class="app-container">
       <div class="main-content">
+        <!-- Seção de Anotações Rápidas -->
         <div class="notes-section" id="notesSection">
           <h2>Anotações Rápidas</h2>
           <textarea id="quickNotes" placeholder="Escreva suas notas aqui (Ctrl+S para salvar)..."></textarea>
         </div>
+
+        <!-- Seção de Tarefas -->
         <div class="tasks-section" id="tasksSection">
           <h2>Minhas Tarefas</h2>
-          <input type="text" id="taskInput" placeholder="Digite uma nova tarefa...">
+          <input type="text" id="taskInput" placeholder="Digite uma nova tarefa..." />
           <ul class="tasks-list" id="tasksList"></ul>
         </div>
-        <div class="table-section">
-          <h2>Tabela de Contratos</h2>
-          <div id="tableFormattingTools" style="margin: 10px 0;">
-            <button onclick="applyBold()" title="Negrito (Ctrl+B)"><i class="fas fa-bold"></i></button>
-            <button onclick="applyRed()" title="Vermelho (Ctrl+R)"><i class="fas fa-square" style="color: red;"></i></button>
-            <button onclick="applyBlue()" title="Azul (Ctrl+L)"><i class="fas fa-square" style="color: blue;"></i></button>
-            <button class="black-btn" onclick="markImportant()" title="Marcar como Importante"><i class="fas fa-star"></i></button>
-          </div>
+
+        <!-- Seção de Contratos -->
+        <div class="contracts-section" id="contractsSection">
+          <h2>Contratos</h2>
           <div id="tableControls">
             <button onclick="addRow()">Adicionar Linha</button>
-            <button onclick="removeRow()">Remover Última Linha</button>
+            <button onclick="removeRow()">Remover Linha</button>
             <button onclick="addColumn()">Adicionar Coluna</button>
-            <button onclick="removeColumn()">Remover Última Coluna</button>
-            <button id="updateTableBtn" onclick="saveTableData()" style="display: none;">Atualizar</button>
+            <button onclick="removeColumn()">Remover Coluna</button>
+            <button id="updateTableBtn" onclick="saveTableData()" style="display: none;">Salvar Alterações</button>
           </div>
-          <table id="editableTable" style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; margin-top: 10px;">
-            <thead style="background-color: #4a90e2; color: white; font-weight: bold;">
-              <tr>
-                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">SEI</th>
-                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">CONTRATO</th>
-                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">EMPRESA</th>
-                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;"><input type="date" id="prorrogacaoTemplate" style="width: 100%; padding: 0; border: none; background: transparent; color: white;" readonly></th>
-                <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">PENDÊNCIAS</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style="background-color: #f9f9f9;">
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;" contenteditable="true"><strong>0060404-14.2018.8.16.6000</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;" contenteditable="true">369/2019 (Digitalização)</td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;" contenteditable="true">UNILEHU</td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;"><input type="date" class="prorrogacao-date" value=""></td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;" contenteditable="true">Aguardar providências arquivamento</td>
-              </tr>
-              <tr style="background-color: #ffffff;">
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;" contenteditable="true"><strong>0032440-07.2022.8.16.6000</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;" contenteditable="true">140/2022 (Telefonista, Recepcionista e Copeiragem)</td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;" contenteditable="true">CENTRALLIMP</td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;"><input type="date" class="prorrogacao-date" value="2026-02-03"></td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;" contenteditable="true"></td>
-              </tr>
-              <tr style="background-color: #f9f9f9;">
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;" contenteditable="true"><strong>0072326-81.2020.8.16.6000</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;" contenteditable="true">249/2020 – Correios</td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;" contenteditable="true">Correios</td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;"><input type="date" class="prorrogacao-date" value="2025-11-01"></td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;" contenteditable="true"></td>
-              </tr>
-              <tr style="background-color: #ffffff;">
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;" contenteditable="true"><strong>0008991-83.2023.8.16.6000</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;" contenteditable="true">20/2023 (Limpeza IX)</td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;" contenteditable="true">Costa Oeste</td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;"><input type="date" class="prorrogacao-date" value="2026-06-16"></td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;" contenteditable="true"></td>
-              </tr>
-              <tr style="background-color: #f9f9f9;">
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;" contenteditable="true"><strong>0009022-06.2023.8.16.6000</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;" contenteditable="true">24/2023 (Limpeza VIII)</td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;" contenteditable="true">Costa Oeste</td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;"><input type="date" class="prorrogacao-date" value="2026-07-08"></td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;" contenteditable="true"></td>
-              </tr>
-              <tr style="background-color: #ffffff;">
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;" contenteditable="true"><strong>0155194-14.2023.8.16.6000</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;" contenteditable="true">17/2024 (Vigilancia I)</td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;" contenteditable="true">Betron</td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;"><input type="date" class="prorrogacao-date" value="2025-10-15"></td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;" contenteditable="true">Aditivo afonso pena (SEI 0142848-94.2024.8.16.6000)</td>
-              </tr>
-              <tr style="background-color: #f9f9f9;">
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;" contenteditable="true"><strong>0016228-37.2024.8.16.6000</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;" contenteditable="true">Técnico em secretariado</td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;" contenteditable="true">Iguasseg</td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;"><input type="date" class="prorrogacao-date" value=""></td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #ffffff;" contenteditable="true"></td>
-              </tr>
-              <tr style="background-color: #ffffff;">
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;" contenteditable="true"><strong>0131789-12.2024.8.16.6000</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;" contenteditable="true">Contratação PCD</td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;" contenteditable="true"></td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;"><input type="date" class="prorrogacao-date" value=""></td>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;" contenteditable="true">Aguarda TR</td>
-              </tr>
-            </tbody>
-          </table>
+          <div id="tableFormattingTools" class="formatting-tools">
+            <button onclick="applyBold()">Negrito (Ctrl+B)</button>
+            <button onclick="applyRed()">Vermelho (Ctrl+R)</button>
+            <button onclick="applyBlue()">Azul (Ctrl+L)</button>
+            <button onclick="markImportant()">Destacar</button>
+          </div>
+          <div id="tabelaContainer"></div>
         </div>
+
+        <!-- Seção de Categorias -->
         <div class="container" id="buttonContainer">
           <button id="addCategoryBtn" onclick="addCategory()">Adicionar Categoria</button>
           <button id="removeCategoryBtn" onclick="removeCategory()">Remover Categoria</button>
@@ -170,26 +112,30 @@
             </div>
           </div>
         </div>
+
+        <!-- Seção do Calendário -->
         <div class="calendar-section" id="calendarSection">
           <h2>Calendário</h2>
           <div id="calendar"></div>
         </div>
         <button id="backToTop">Voltar ao topo</button>
       </div>
+
+      <!-- Seção de Ferramentas de IA -->
       <div id="secaoIA">
         <h2>Ferramentas de IA</h2>
         <div class="ia-buttons">
-          <button class="btnIA" onclick="mostrarIA('chatgpt')" title="Abrir ChatGPT">ChatGPT</button>
-          <button class="btnIA" onclick="mostrarIA('gemini')" title="Abrir Gemini">Gemini</button>
-          <button class="btnIA" onclick="mostrarIA('perplexity')" title="Abrir Perplexity">Perplexity</button>
-          <button class="btnIA" onclick="mostrarIA('copilot')" title="Abrir Copilot">Copilot</button>
-          <button class="btnIA" onclick="mostrarIA('deepseek')" title="Abrir DeepSeek">DeepSeek</button>
-          <button class="btnIA" onclick="mostrarIA('claude')" title="Abrir Claude">Claude</button>
-          <button class="btnIA" onclick="mostrarIA('grok')" title="Abrir Grok">Grok</button>
-          <button class="btnIA" onclick="mostrarIA('lechat')" title="Abrir Le Chat">Le Chat</button>
-          <button class="btnIA" onclick="mostrarIA('sabia')" title="Abrir Sabia">Sabia</button>
-          <button class="btnIA" onclick="mostrarIA('qwenchat')" title="Abrir Qwen">Qwen</button>
-          <button class="btnIA" onclick="mostrarIA('iadod')" title="Abrir Iadod">Iadod</button>
+          <button class="btnIA" onclick="mostrarIA('chatgpt', this)" title="Abrir ChatGPT">ChatGPT</button>
+          <button class="btnIA" onclick="mostrarIA('gemini', this)" title="Abrir Gemini">Gemini</button>
+          <button class="btnIA" onclick="mostrarIA('perplexity', this)" title="Abrir Perplexity">Perplexity</button>
+          <button class="btnIA" onclick="mostrarIA('copilot', this)" title="Abrir Copilot">Copilot</button>
+          <button class="btnIA" onclick="mostrarIA('deepseek', this)" title="Abrir DeepSeek">DeepSeek</button>
+          <button class="btnIA" onclick="mostrarIA('claude', this)" title="Abrir Claude">Claude</button>
+          <button class="btnIA" onclick="mostrarIA('grok', this)" title="Abrir Grok">Grok</button>
+          <button class="btnIA" onclick="mostrarIA('lechat', this)" title="Abrir Le Chat">Le Chat</button>
+          <button class="btnIA" onclick="mostrarIA('sabia', this)" title="Abrir Sabia">Sabia</button>
+          <button class="btnIA" onclick="mostrarIA('qwenchat', this)" title="Abrir Qwen">Qwen</button>
+          <button class="btnIA" onclick="mostrarIA('iadod', this)" title="Abrir Iadod">Iadod</button>
         </div>
         <div id="iframesContainer">
           <div class="iframe-wrapper">
@@ -203,20 +149,23 @@
         </div>
       </div>
     </div>
+
     <!-- Janela pop-up para detalhes do evento -->
-    <div id="eventPopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); z-index: 1001;">
+    <div id="eventPopup" class="event-popup">
       <h3 id="eventTitle">Detalhes do Evento</h3>
-      <input type="text" id="eventInput" placeholder="Título do evento" style="width: 100%; padding: 8px; margin: 10px 0;">
-      <input type="datetime-local" id="eventStart" style="width: 100%; padding: 8px; margin: 10px 0;">
-      <input type="datetime-local" id="eventEnd" style="width: 100%; padding: 8px; margin: 10px 0;">
-      <textarea id="eventDescription" placeholder="Descrição" style="width: 100%; padding: 8px; margin: 10px 0; min-height: 80px;"></textarea>
-      <button onclick="saveEvent()" style="padding: 8px 16px; background-color: #4a90e2; color: white; border: none; border-radius: 4px; cursor: pointer;">Salvar</button>
-      <button onclick="deleteEvent()" style="padding: 8px 16px; background-color: #e74c3c; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">Excluir</button>
-      <button onclick="closePopup()" style="padding: 8px 16px; background-color: #7f8c8d; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">Fechar</button>
+      <input type="text" id="eventInput" placeholder="Título do evento" class="popup-input" />
+      <input type="datetime-local" id="eventStart" class="popup-input" />
+      <input type="datetime-local" id="eventEnd" class="popup-input" />
+      <textarea id="eventDescription" placeholder="Descrição do evento" class="popup-textarea"></textarea>
+      <button onclick="saveEvent()">Salvar</button>
+      <button onclick="deleteEvent()">Excluir</button>
+      <button onclick="closePopup()">Fechar</button>
     </div>
-    <div id="overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000;"></div>
-    <script src="script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <div id="overlay" class="overlay"></div>
+    <button id="backToTop">Voltar ao topo</button>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
