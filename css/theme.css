@@ -1,0 +1,45 @@
+/* theme.css */
+body.dark {
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+body.blue {
+  --bg-color: #e6f0fa;
+  --text-color: #1e3a8a;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+/* Botão de alternância de tema */
+#themeToggle {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  z-index: 1001;
+}
+body.dark #themeToggle {
+  background-color: #1a365d;
+}
+body.blue #themeToggle {
+  background-color: var(--text-color);
+}
+#themeToggle:hover {
+  background-color: var(--color-primary-dark);
+}
+/* Ocultar botão de tema na impressão */
+@media print {
+  #themeToggle {
+    display: none;
+  }
+}

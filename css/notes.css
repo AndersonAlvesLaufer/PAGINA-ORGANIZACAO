@@ -1,0 +1,61 @@
+/* notes.css */
+.notes-section {
+  width: 95%;
+  max-width: calc(100% - 40px);
+  margin: 30px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: var(--shadow-default);
+  transition: background-color 0.3s;
+}
+body.dark .notes-section {
+  background: #1e1e1e;
+  box-shadow: var(--shadow-dark);
+}
+body.blue .notes-section {
+  background: #f0f7ff;
+}
+/* notes.css */
+.notes-section {
+  width: 95%;
+  max-width: calc(100% - 40px);
+  margin: 30px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: var(--shadow-default);
+  transition: background-color 0.3s;
+}
+
+#quickNotes {
+  width: 100%;
+  height: 150px;
+  padding: 10px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+#updateNotesBtn {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: var(--color-secondary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#updateNotesBtn:hover {
+  background-color: var(--color-secondary-dark);
+}
+
+
+#quickNotes {
+  width: 100%;
+  height: 150px;
+  padding: 10px;
+  font-size: 14px;
+  box-sizing: border-box;
+}

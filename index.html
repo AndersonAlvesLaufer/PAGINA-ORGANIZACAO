@@ -4,32 +4,43 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Organizador com Ferramentas de IA</title>
-  <link rel="icon" href="https://example.com/favicon.ico" type="image/x-icon" />
+  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+  <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript"></script>
+  <!-- Font Awesome e FullCalendar -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/dist/index.global.min.css" />
+
+  <!-- Arquivos de estilo CSS (não incluídos aqui, mas mantenha suas referências) -->
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/login.css" />
+  <link rel="stylesheet" href="css/tasks.css" />
+  <link rel="stylesheet" href="css/notes.css" />
+  <link rel="stylesheet" href="css/contracts.css" />
+  <link rel="stylesheet" href="css/calendar.css" />
+  <link rel="stylesheet" href="css/categories.css" />
+  <link rel="stylesheet" href="css/ia.css" />
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/utils.css" />
+
+  <!-- Script do FullCalendar -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 </head>
 <body>
-  <!-- Tela de Login -->
-  <div id="loginScreen" class="login-screen">
-    <div class="login-box">
-      <h2>Login</h2>
-      <input type="text" id="username" placeholder="Usuário" class="login-input" />
-      <input type="password" id="password" placeholder="Senha" class="login-input" />
-      <button onclick="login()" class="login-btn">Entrar</button>
-    </div>
-  </div>
+  
 
   <!-- Conteúdo Principal -->
   <div id="mainContent" class="main-content-wrapper">
+    <!-- Botão de alternância de tema -->
     <button id="themeToggle"><i class="fas fa-moon"></i> Alternar Tema</button>
+
     <div class="app-container">
       <div class="main-content">
-        <!-- Seção de Anotações Rápidas -->
-        <div class="notes-section" id="notesSection">
-          <h2>Anotações Rápidas</h2>
-          <textarea id="quickNotes" placeholder="Escreva suas notas aqui (Ctrl+S para salvar)..."></textarea>
-        </div>
+       <!-- Seção de Anotações Rápidas -->
+<div class="notes-section" id="notesSection">
+  <h2>Anotações Rápidas</h2>
+  <textarea id="quickNotes" placeholder="Escreva suas notas aqui..."></textarea>
+  <button id="updateNotesBtn" onclick="updateNotes()">Atualizar</button>
+</div>
 
         <!-- Seção de Tarefas -->
         <div class="tasks-section" id="tasksSection">
@@ -39,88 +50,126 @@
         </div>
 
         <!-- Seção de Contratos -->
-        <div class="contracts-section" id="contractsSection">
-          <h2>Contratos</h2>
-          <div id="tableControls">
-            <button onclick="addRow()">Adicionar Linha</button>
-            <button onclick="removeRow()">Remover Linha</button>
-            <button onclick="addColumn()">Adicionar Coluna</button>
-            <button onclick="removeColumn()">Remover Coluna</button>
-            <button id="updateTableBtn" onclick="saveTableData()" style="display: none;">Salvar Alterações</button>
-          </div>
-          <div id="tableFormattingTools" class="formatting-tools">
-            <button onclick="applyBold()">Negrito (Ctrl+B)</button>
-            <button onclick="applyRed()">Vermelho (Ctrl+R)</button>
-            <button onclick="applyBlue()">Azul (Ctrl+L)</button>
-            <button onclick="markImportant()">Destacar</button>
-          </div>
-          <div id="tabelaContainer"></div>
-        </div>
+<div class="contracts-section" id="contractsSection">
+  <h2>Contratos</h2>
+  <div id="tableControls">
+    <button onclick="addRow()">Adicionar Linha</button>
+    <button onclick="removeRow()">Remover Linha</button>
+    <button onclick="saveTableData()" id="updateTableBtn" style="display: none;">Salvar Alterações</button>
+  </div>
+  <div id="tableFormattingTools" class="formatting-tools" data-activeCell="">
+    <button onclick="applyBold()">Negrito (Ctrl+B)</button>
+    <button onclick="applyRed()">Vermelho (Ctrl+R)</button>
+    <button onclick="applyBlue()">Azul (Ctrl+L)</button>
+    <button onclick="applyBlack()">Preto (Ctrl+K)</button>
+    <button onclick="markImportant()">Destacar</button>
+  </div>
+  <div id="tabelaContainer">
+    <table border="1" id="editableTable" style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; margin-top: 10px;">
+      <thead style="background-color: #4a90e2; color: white; font-weight: bold;">
+        <tr>
+          <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">SEI</th>
+          <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">CONTRATO</th>
+          <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">EMPRESA</th>
+          <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">PRORROGAÇÃO</th>
+          <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">PENDÊNCIAS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- As linhas serão renderizadas dinamicamente a partir do Firestore -->
+      </tbody>
+    </table>
+  </div>
+</div>
 
-        <!-- Seção de Categorias -->
-        <div class="container" id="buttonContainer">
-          <button id="addCategoryBtn" onclick="addCategory()">Adicionar Categoria</button>
-          <button id="removeCategoryBtn" onclick="removeCategory()">Remover Categoria</button>
+       <!-- Seção de Categorias -->
+<div class="container" id="buttonContainer">
+  <!-- Botão pequeno para adicionar categoria -->
+  <button id="addCategoryBtn" class="small-add-category-btn" onclick="addCategoryPrompt()" title="Adicionar categoria">
+    <i class="fas fa-plus"></i>
+  </button>
+  <!-- As categorias serão renderizadas dinamicamente aqui -->
+
+
+
+          <!-- Categorias padrão (estáticas) -->
           <div class="category" data-id="card-direito" data-tags="direito" draggable="true">
             <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
+            <button class="remove-category-btn" title="Remover categoria"><i class="fas fa-times"></i></button>
             <h3>Direito</h3>
             <p>Documentos jurídicos e pareceres</p>
             <a href="onedrive://documentos_juridicos" target="_blank">Documentos Jurídicos</a>
-            <div class="subitems-container" data-subitem-id="card-direito">
-              <ul></ul>
-              <button class="add-subitem-btn">+ Subitem</button>
-            </div>
+            <input type="text" class="search-subitems" placeholder="Pesquisar subitens..." />
+            <div class="subitems-list" data-subitem-id="card-direito"></div>
+            <button class="add-subitem-btn">+ Adicionar Subitem</button>
           </div>
+
           <div class="category" data-id="card-pessoal" data-tags="pessoal" draggable="true">
             <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
+            <button class="remove-category-btn" title="Remover categoria"><i class="fas fa-times"></i></button>
             <h3>Pessoal</h3>
             <p>Documentos e fotos pessoais</p>
             <a href="onedrive://fotos_e_documentos" target="_blank">Fotos e Documentos</a>
-            <div class="subitems-container" data-subitem-id="card-pessoal">
-              <ul></ul>
-              <button class="add-subitem-btn">+ Subitem</button>
-            </div>
+            <input type="text" class="search-subitems" placeholder="Pesquisar subitens..." />
+            <div class="subitems-list" data-subitem-id="card-pessoal"></div>
+            <button class="add-subitem-btn">+ Adicionar Subitem</button>
           </div>
+
           <div class="category" data-id="card-economia" data-tags="economia" draggable="true">
             <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
+            <button class="remove-category-btn" title="Remover categoria"><i class="fas fa-times"></i></button>
             <h3>Economia/Investimentos</h3>
             <p>Recursos financeiros</p>
             <a href="onedrive://indice_de_economia" target="_blank">Índice de Economia</a>
-            <div class="subitems-container" data-subitem-id="card-economia">
-              <ul></ul>
-              <button class="add-subitem-btn">+ Subitem</button>
-            </div>
+            <input type="text" class="search-subitems" placeholder="Pesquisar subitens..." />
+            <div class="subitems-list" data-subitem-id="card-economia"></div>
+            <button class="add-subitem-btn">+ Adicionar Subitem</button>
           </div>
+
           <div class="category" data-id="card-trabalho-tj" data-tags="trabalho-tj" draggable="true">
             <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
-            <h3>Trabalho-TJ</h3>
+            <button class="remove-category-btn" title="Remover categoria"><i class="fas fa-times"></i></button>
+            <h3>Trabalho – TJ</h3>
             <p>Documentos do Tribunal de Justiça</p>
             <a href="onedrive://trabalho_tj" target="_blank">Documentos TJ</a>
-            <div class="subitems-container" data-subitem-id="card-trabalho-tj">
-              <ul></ul>
-              <button class="add-subitem-btn">+ Subitem</button>
-            </div>
+            <input type="text" class="search-subitems" placeholder="Pesquisar subitens..." />
+            <div class="subitems-list" data-subitem-id="card-trabalho-tj"></div>
+            <button class="add-subitem-btn">+ Adicionar Subitem</button>
           </div>
+
           <div class="category" data-id="card-ferramentas" data-tags="ferramentas" draggable="true">
             <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
+            <button class="remove-category-btn" title="Remover categoria"><i class="fas fa-times"></i></button>
             <h3>Ferramentas</h3>
             <p>Ferramentas e utilitários</p>
             <a href="onedrive://ferramentas" target="_blank">Ferramentas</a>
-            <div class="subitems-container" data-subitem-id="card-ferramentas">
-              <ul></ul>
-              <button class="add-subitem-btn">+ Subitem</button>
-            </div>
+            <input type="text" class="search-subitems" placeholder="Pesquisar subitens..." />
+            <div class="subitems-list" data-subitem-id="card-ferramentas"></div>
+            <button class="add-subitem-btn">+ Adicionar Subitem</button>
           </div>
         </div>
-
-        <!-- Seção do Calendário -->
+        <!-- Seção do Calendário
         <div class="calendar-section" id="calendarSection">
-          <h2>Calendário</h2>
-          <div id="calendar"></div>
-        </div>
-        <button id="backToTop">Voltar ao topo</button>
-      </div>
+          <h2>Agende seu Horário</h2>
+          <div class="calendly-inline-widget" data-url="https://calendly.com/anderson_alves_a" style="min-width:320px; height:630px;"></div>
+        </div> -->
 
+        <h1>Meu Calendário do Outlook</h1>
+        <style>
+          .calendar-container {
+              width: 100%;
+              height: 600px;
+              border: none;
+          }
+      </style>
+        <div class="calendar-section" id="calendarSection"></div>
+        <iframe
+            class="calendar-container"
+            src="https://outlook.office365.com/owa/calendar/8bbf2fe3a5834a639684cefcb3eed24f@tjpr.jus.br/abba35aa97424e85915d05f8e59c55742205299517638162024/calendar.html"
+            frameborder="0"
+            scrolling="no">
+        </iframe>
+      </div>
       <!-- Seção de Ferramentas de IA -->
       <div id="secaoIA">
         <h2>Ferramentas de IA</h2>
@@ -137,6 +186,7 @@
           <button class="btnIA" onclick="mostrarIA('qwenchat', this)" title="Abrir Qwen">Qwen</button>
           <button class="btnIA" onclick="mostrarIA('iadod', this)" title="Abrir Iadod">Iadod</button>
         </div>
+        <!-- Iframes de IA opcionais (comentados)
         <div id="iframesContainer">
           <div class="iframe-wrapper">
             <h3>Perplexity</h3>
@@ -147,25 +197,22 @@
             <iframe src="https://chat.qwen.ai/" title="Qwen" loading="lazy" style="display: block;"></iframe>
           </div>
         </div>
+        -->
       </div>
-    </div>
+    </div> <!-- .app-container -->
+  </div> <!-- #mainContent -->
 
-    <!-- Janela pop-up para detalhes do evento -->
-    <div id="eventPopup" class="event-popup">
-      <h3 id="eventTitle">Detalhes do Evento</h3>
-      <input type="text" id="eventInput" placeholder="Título do evento" class="popup-input" />
-      <input type="datetime-local" id="eventStart" class="popup-input" />
-      <input type="datetime-local" id="eventEnd" class="popup-input" />
-      <textarea id="eventDescription" placeholder="Descrição do evento" class="popup-textarea"></textarea>
-      <button onclick="saveEvent()">Salvar</button>
-      <button onclick="deleteEvent()">Excluir</button>
-      <button onclick="closePopup()">Fechar</button>
-    </div>
-    <div id="overlay" class="overlay"></div>
-    <button id="backToTop">Voltar ao topo</button>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-  <script src="script.js"></script>
+  <!-- Scripts (ordem de carregamento) -->
+  <script type="module" src="js/firebase.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/theme.js"></script>
+  <script type="module" src="js/notes.js"></script>
+  <script type="module" src="js/tasks.js"></script>
+  <script type="module" src="js/categories.js"></script>
+  <script type="module" src="js/subitems.js"></script>
+  <script type="module" src="js/contracts.js"></script>
+  <script type="module" src="js/calendar.js"></script>
+  <script type="module" src="js/ia.js"></script>
+  <script type="module" src="js/utils.js"></script>
 </body>
 </html>

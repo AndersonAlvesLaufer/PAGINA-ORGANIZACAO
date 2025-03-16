@@ -1,0 +1,120 @@
+/* utils.css */
+/* Botão "Voltar ao Topo" (não visível no HTML atual, presente para referência) */
+#backToTop {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+#backToTop:hover {
+  background-color: var(--color-primary-dark);
+}
+
+/* Botões genéricos pequenos */
+.category-control-btn {
+  padding: 6px 10px;
+  font-size: 12px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 5px;
+  transition: background-color 0.2s;
+}
+.category-control-btn:hover {
+  background-color: #2980b9;
+}
+
+/* Botão fixar categoria (tachinha) */
+.pin-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 1rem;
+  color: #333;
+  cursor: pointer;
+}
+body.dark .pin-btn {
+  color: #bbb;
+}
+body.blue .pin-btn {
+  color: var(--text-color);
+}
+.pin-btn:hover {
+  color: var(--color-error);
+}
+.pinned .pin-btn {
+  color: var(--color-warning);
+}
+
+/* Botão adicionar subitem (+) */
+.add-subitem-btn {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.add-subitem-btn:hover {
+  background: var(--color-primary-dark);
+}
+
+/* Botão adicionar categoria (pequeno círculo com +) */
+.small-add-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px auto;
+  transition: background-color 0.2s;
+}
+.small-add-btn:hover {
+  background-color: #2980b9;
+}
+
+/* Botão remover categoria (X) */
+.remove-category-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.remove-category-btn:hover {
+  color: #e74c3c;
+}
+body.dark .remove-category-btn {
+  color: #bbb;
+}
+body.dark .remove-category-btn:hover {
+  color: #e74c3c;
+}
+body.blue .remove-category-btn {
+  color: #1e3a8a;
+}
+body.blue .remove-category-btn:hover {
+  color: #e74c3c;
+}
+
+/* Botão de restaurar (utilizado em IA) – já definido em ia.css */

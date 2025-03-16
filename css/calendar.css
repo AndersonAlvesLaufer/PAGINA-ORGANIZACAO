@@ -1,0 +1,21 @@
+/* calendar.css */
+.calendar-section {
+  width: 95%;
+  max-width: calc(100% - 40px);
+  margin: 30px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: var(--shadow-default);
+  transition: background-color 0.3s;
+}
+body.dark .calendar-section {
+  background: #1e1e1e;
+  box-shadow: var(--shadow-dark);
+}
+body.blue .calendar-section {
+  background: #f0f7ff;
+}
+#calendar {
+  max-width: 100%;
+}

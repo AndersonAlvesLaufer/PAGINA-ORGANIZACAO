@@ -1,0 +1,65 @@
+/* ia.css */
+#secaoIA {
+  width: 30%;
+  height: 100vh;
+  position: fixed;
+  right: 0;
+  top: 0;
+  background-color: #f0f4f8;
+  border-left: 1px solid var(--border-light);
+  padding: 20px;
+  overflow-y: auto;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+}
+body.dark #secaoIA {
+  background-color: #1e1e1e;
+  border-left: 1px solid var(--border-dark);
+}
+body.blue #secaoIA {
+  background-color: var(--bg-color);
+  border-left: 1px solid #a3bffa;
+}
+.ia-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.btnIA {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.3s;
+  font-size: 12px;
+}
+body.dark .btnIA {
+  background-color: var(--color-primary-dark);
+}
+body.blue .btnIA {
+  background-color: var(--text-color);
+}
+.btnIA:hover {
+  background-color: var(--color-primary-dark);
+  transform: scale(1.05);
+}
+.btnIA.disabled {
+  background-color: #95a5a6;
+  opacity: 0.5;
+  pointer-events: none;
+}
+/* Botão de restaurar (aparece temporariamente ao desabilitar uma IA) */
+.btnRestaurar {
+  margin-left: 10px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+.btnRestaurar:hover {
+  background-color: #c82333;
+}

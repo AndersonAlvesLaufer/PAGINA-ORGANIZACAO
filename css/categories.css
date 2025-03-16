@@ -1,0 +1,148 @@
+/* categories.css */
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  width: 95%;
+  max-width: calc(100% - 40px);
+  margin: 30px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: var(--shadow-default);
+  transition: background-color 0.3s;
+}
+body.dark .container {
+  background: #1e1e1e;
+  box-shadow: var(--shadow-dark);
+}
+body.blue .container {
+  background: #f0f7ff;
+}
+.category {
+  background: #fff;
+  padding: 20px;
+  text-align: center;
+  border-radius: 8px;
+  box-shadow: var(--shadow-default);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s;
+  cursor: grab;
+  position: relative;
+  width: 240px;
+}
+body.dark .category {
+  background: #1e1e1e;
+  box-shadow: var(--shadow-dark);
+  color: var(--text-color);
+}
+body.blue .category {
+  background: #fff;
+}
+.category:hover {
+  transform: scale(1.05);
+}
+.category.dragging {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+.category h3 {
+  margin: 0 0 10px 0;
+}
+.category p {
+  margin: 0 0 10px 0;
+}
+.category a {
+  color: blue;
+  text-decoration: underline;
+}
+.subitems-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 10px 0;
+}
+.subitems-list li {
+  background: #f0f0f0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+body.dark .subitems-list li {
+  background: #333;
+}
+body.blue .subitems-list li {
+  background: #dbeafe;
+}
+.search-subitems {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+/* Botão pequeno para adicionar categoria */
+.small-add-category-btn {
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px;
+  transition: background-color 0.2s;
+}
+.small-add-category-btn:hover {
+  background: #2980b9;
+}
+/* Botão pequeno para adicionar categoria */
+.small-add-category-btn {
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px;
+  transition: background-color 0.2s;
+}
+.small-add-category-btn:hover {
+  background: #2980b9;
+}
+
+/* Botão de remoção de categoria (pequeno "X" vermelho) já configurado inline, mas pode ser definido aqui para consistência */
+.remove-category-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: transparent;
+  border: none;
+  color: red;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+
+/* Animação para exibição de subitem (não utilizado atualmente) */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media print {
+  .category a::after {
+    content: " (" attr(href) ")";
+    font-size: 0.9em;
+  }
+}

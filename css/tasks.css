@@ -1,0 +1,44 @@
+/* tasks.css */
+.tasks-section {
+  width: 95%;
+  max-width: calc(100% - 40px);
+  margin: 30px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: var(--shadow-default);
+  transition: background-color 0.3s;
+}
+body.dark .tasks-section {
+  background: #1e1e1e;
+  box-shadow: var(--shadow-dark);
+}
+body.blue .tasks-section {
+  background: #f0f7ff;
+}
+
+#tasksList {
+  list-style: none;
+  padding: 0;
+}
+#tasksList li {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  border-bottom: 1px solid #ccc;
+}
+body.dark #tasksList li {
+  background: #333;
+}
+body.blue #tasksList li {
+  background: #dbeafe;
+}
+.remove-task {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #666;
+}
+.remove-task:hover {
+  color: var(--color-error);
+}

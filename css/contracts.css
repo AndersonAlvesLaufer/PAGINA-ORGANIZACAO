@@ -1,0 +1,89 @@
+/* contracts.css */
+.contracts-section {
+  width: 95%;
+  max-width: calc(100% - 40px);
+  margin: 30px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: var(--shadow-default);
+  transition: background-color 0.3s;
+}
+body.dark .contracts-section {
+  background: #1e1e1e;
+  box-shadow: var(--shadow-dark);
+}
+body.blue .contracts-section {
+  background: #f0f7ff;
+}
+
+/* Estilos da tabela de contratos */
+#editableTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-family: Arial, sans-serif;
+}
+#editableTable thead {
+  background-color: var(--color-secondary);
+  color: white;
+  font-weight: bold;
+}
+#editableTable th,
+#editableTable td {
+  padding: 8px 12px;
+  border: 1px solid var(--border-light);
+  text-align: left;
+}
+#editableTable tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+#editableTable tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+#editableTable td[contenteditable="true"] {
+  cursor: text;
+}
+#editableTable td[contenteditable="true"]:hover {
+  background-color: #f0f0f0;
+}
+#editableTable td:first-child {
+  font-weight: bold;
+}
+body.dark #editableTable th {
+  background-color: var(--border-dark);
+  color: var(--text-color);
+}
+body.dark #editableTable td {
+  color: var(--text-color);
+}
+body.dark #editableTable td[contenteditable="true"]:hover {
+  background-color: #555;
+}
+body.blue #editableTable th {
+  background-color: var(--text-color);
+  color: white;
+}
+
+/* Botões de controle da tabela */
+#tableControls button,
+#tableFormattingTools button {
+  padding: 8px 12px;
+  margin: 5px 5px 5px 0;
+  background-color: var(--color-secondary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+#tableControls button:hover,
+#tableFormattingTools button:hover {
+  background-color: var(--color-secondary-dark);
+}
+
+@media print {
+  #tableControls,
+  #tableFormattingTools {
+    display: none;
+  }
+}
