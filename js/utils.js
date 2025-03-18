@@ -13,7 +13,6 @@ export function initializeApp() {
 
   try {
     if (typeof window.initNotes === 'function') window.initNotes();
-    // ... outros módulos (tarefas, categorias, etc.)
     if (typeof window.initTasks === 'function') window.initTasks();
     if (typeof window.loadCategories === 'function') window.loadCategories();
     if (typeof window.initSubitemsAll === 'function') window.initSubitemsAll();

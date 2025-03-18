@@ -1,3 +1,5 @@
+// js/firebase.js
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
 import { getFirestore, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
@@ -11,8 +13,7 @@ const firebaseConfig = {
     messagingSenderId: "85698960652",
     appId: "1:85698960652:web:b6a118dcd2c04df529fd29",
     measurementId: "G-C7LQNVGQ12"
-  };
-
+};
 
 // Inicializa o app Firebase
 const app = initializeApp(firebaseConfig);

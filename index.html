@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/dist/index.global.min.css" />
 
-  <!-- Arquivos de estilo CSS (não incluídos aqui, mas mantenha suas referências) -->
+  <!-- Arquivos de estilo CSS -->
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/login.css" />
   <link rel="stylesheet" href="css/tasks.css" />
@@ -24,10 +24,57 @@
 
   <!-- Script do FullCalendar -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+  
+  <!-- Estilos básicos para o modal de evento -->
+  <style>
+    /* Modal container */
+    .modal {
+      display: none; 
+      position: fixed; 
+      z-index: 1000; 
+      left: 0;
+      top: 0;
+      width: 100%; 
+      height: 100%; 
+      overflow: auto; 
+      background-color: rgba(0,0,0,0.4);
+    }
+    /* Modal content */
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto; 
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 400px;
+      border-radius: 4px;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover, .close:focus {
+      color: black;
+      text-decoration: none;
+    }
+    /* Estilos dos inputs e botões no modal */
+    #eventTitle {
+      width: 100%;
+      padding: 8px;
+      margin: 10px 0;
+      box-sizing: border-box;
+    }
+    #saveEventBtn, #cancelEventBtn {
+      padding: 8px 16px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  
-
   <!-- Conteúdo Principal -->
   <div id="mainContent" class="main-content-wrapper">
     <!-- Botão de alternância de tema -->
@@ -35,12 +82,12 @@
 
     <div class="app-container">
       <div class="main-content">
-       <!-- Seção de Anotações Rápidas -->
-<div class="notes-section" id="notesSection">
-  <h2>Anotações Rápidas</h2>
-  <textarea id="quickNotes" placeholder="Escreva suas notas aqui..."></textarea>
-  <button id="updateNotesBtn" onclick="updateNotes()">Atualizar</button>
-</div>
+        <!-- Seção de Anotações Rápidas -->
+        <div class="notes-section" id="notesSection">
+          <h2>Anotações Rápidas</h2>
+          <textarea id="quickNotes" placeholder="Escreva suas notas aqui..."></textarea>
+          <button id="updateNotesBtn" onclick="updateNotes()">Atualizar</button>
+        </div>
 
         <!-- Seção de Tarefas -->
         <div class="tasks-section" id="tasksSection">
@@ -50,49 +97,45 @@
         </div>
 
         <!-- Seção de Contratos -->
-<div class="contracts-section" id="contractsSection">
-  <h2>Contratos</h2>
-  <div id="tableControls">
-    <button onclick="addRow()">Adicionar Linha</button>
-    <button onclick="removeRow()">Remover Linha</button>
-    <button onclick="saveTableData()" id="updateTableBtn" style="display: none;">Salvar Alterações</button>
-  </div>
-  <div id="tableFormattingTools" class="formatting-tools" data-activeCell="">
-    <button onclick="applyBold()">Negrito (Ctrl+B)</button>
-    <button onclick="applyRed()">Vermelho (Ctrl+R)</button>
-    <button onclick="applyBlue()">Azul (Ctrl+L)</button>
-    <button onclick="applyBlack()">Preto (Ctrl+K)</button>
-    <button onclick="markImportant()">Destacar</button>
-  </div>
-  <div id="tabelaContainer">
-    <table border="1" id="editableTable" style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; margin-top: 10px;">
-      <thead style="background-color: #4a90e2; color: white; font-weight: bold;">
-        <tr>
-          <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">SEI</th>
-          <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">CONTRATO</th>
-          <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">EMPRESA</th>
-          <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">PRORROGAÇÃO</th>
-          <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">PENDÊNCIAS</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- As linhas serão renderizadas dinamicamente a partir do Firestore -->
-      </tbody>
-    </table>
-  </div>
-</div>
+        <div class="contracts-section" id="contractsSection">
+          <h2>Contratos</h2>
+          <div id="tableControls">
+            <button onclick="addRow()">Adicionar Linha</button>
+            <button onclick="removeRow()">Remover Linha</button>
+            <button onclick="saveTableData()" id="updateTableBtn" style="display: none;">Salvar Alterações</button>
+          </div>
+          <div id="tableFormattingTools" class="formatting-tools" data-activeCell="">
+            <button onclick="applyBold()">Negrito (Ctrl+B)</button>
+            <button onclick="applyRed()">Vermelho (Ctrl+R)</button>
+            <button onclick="applyBlue()">Azul (Ctrl+L)</button>
+            <button onclick="applyBlack()">Preto (Ctrl+K)</button>
+            <button onclick="markImportant()">Destacar</button>
+          </div>
+          <div id="tabelaContainer">
+            <table border="1" id="editableTable" style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; margin-top: 10px;">
+              <thead style="background-color: #4a90e2; color: white; font-weight: bold;">
+                <tr>
+                  <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">SEI</th>
+                  <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">CONTRATO</th>
+                  <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">EMPRESA</th>
+                  <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">PRORROGAÇÃO</th>
+                  <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">PENDÊNCIAS</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- As linhas serão renderizadas dinamicamente a partir do Firestore -->
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-       <!-- Seção de Categorias -->
-<div class="container" id="buttonContainer">
-  <!-- Botão pequeno para adicionar categoria -->
-  <button id="addCategoryBtn" class="small-add-category-btn" onclick="addCategoryPrompt()" title="Adicionar categoria">
-    <i class="fas fa-plus"></i>
-  </button>
-  <!-- As categorias serão renderizadas dinamicamente aqui -->
-
-
-
-          <!-- Categorias padrão (estáticas) -->
+        <!-- Seção de Categorias -->
+        <div class="container" id="buttonContainer">
+          <!-- Botão pequeno para adicionar categoria -->
+          <button id="addCategoryBtn" class="small-add-category-btn" onclick="addCategoryPrompt()" title="Adicionar categoria">
+            <i class="fas fa-plus"></i>
+          </button>
+          <!-- Categorias estáticas -->
           <div class="category" data-id="card-direito" data-tags="direito" draggable="true">
             <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
             <button class="remove-category-btn" title="Remover categoria"><i class="fas fa-times"></i></button>
@@ -103,7 +146,6 @@
             <div class="subitems-list" data-subitem-id="card-direito"></div>
             <button class="add-subitem-btn">+ Adicionar Subitem</button>
           </div>
-
           <div class="category" data-id="card-pessoal" data-tags="pessoal" draggable="true">
             <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
             <button class="remove-category-btn" title="Remover categoria"><i class="fas fa-times"></i></button>
@@ -114,7 +156,6 @@
             <div class="subitems-list" data-subitem-id="card-pessoal"></div>
             <button class="add-subitem-btn">+ Adicionar Subitem</button>
           </div>
-
           <div class="category" data-id="card-economia" data-tags="economia" draggable="true">
             <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
             <button class="remove-category-btn" title="Remover categoria"><i class="fas fa-times"></i></button>
@@ -125,7 +166,6 @@
             <div class="subitems-list" data-subitem-id="card-economia"></div>
             <button class="add-subitem-btn">+ Adicionar Subitem</button>
           </div>
-
           <div class="category" data-id="card-trabalho-tj" data-tags="trabalho-tj" draggable="true">
             <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
             <button class="remove-category-btn" title="Remover categoria"><i class="fas fa-times"></i></button>
@@ -136,7 +176,6 @@
             <div class="subitems-list" data-subitem-id="card-trabalho-tj"></div>
             <button class="add-subitem-btn">+ Adicionar Subitem</button>
           </div>
-
           <div class="category" data-id="card-ferramentas" data-tags="ferramentas" draggable="true">
             <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
             <button class="remove-category-btn" title="Remover categoria"><i class="fas fa-times"></i></button>
@@ -148,59 +187,64 @@
             <button class="add-subitem-btn">+ Adicionar Subitem</button>
           </div>
         </div>
-        <!-- Seção do Calendário
-        <div class="calendar-section" id="calendarSection">
-          <h2>Agende seu Horário</h2>
-          <div class="calendly-inline-widget" data-url="https://calendly.com/anderson_alves_a" style="min-width:320px; height:630px;"></div>
-        </div> -->
 
-        <h1>Meu Calendário do Outlook</h1>
-        <style>
-          .calendar-container {
+        <!-- Seção do Calendário -->
+        <div class="calendar-section" id="calendarSection">
+          <h1>Meu Calendário</h1>
+          <!-- Contêiner para o FullCalendar (após a adaptação) -->
+          <div id="calendar"></div>
+          <!-- Calendário do Outlook (iframe original, se desejar manter ambos) -->
+          <style>
+            .calendar-container {
               width: 100%;
               height: 600px;
               border: none;
-          }
-      </style>
-        <div class="calendar-section" id="calendarSection"></div>
-        <iframe
+            }
+          </style>
+          <iframe
             class="calendar-container"
             src="https://outlook.office365.com/owa/calendar/8bbf2fe3a5834a639684cefcb3eed24f@tjpr.jus.br/abba35aa97424e85915d05f8e59c55742205299517638162024/calendar.html"
             frameborder="0"
             scrolling="no">
-        </iframe>
-      </div>
-      <!-- Seção de Ferramentas de IA -->
-      <div id="secaoIA">
-        <h2>Ferramentas de IA</h2>
-        <div class="ia-buttons">
-          <button class="btnIA" onclick="mostrarIA('chatgpt', this)" title="Abrir ChatGPT">ChatGPT</button>
-          <button class="btnIA" onclick="mostrarIA('gemini', this)" title="Abrir Gemini">Gemini</button>
-          <button class="btnIA" onclick="mostrarIA('perplexity', this)" title="Abrir Perplexity">Perplexity</button>
-          <button class="btnIA" onclick="mostrarIA('copilot', this)" title="Abrir Copilot">Copilot</button>
-          <button class="btnIA" onclick="mostrarIA('deepseek', this)" title="Abrir DeepSeek">DeepSeek</button>
-          <button class="btnIA" onclick="mostrarIA('claude', this)" title="Abrir Claude">Claude</button>
-          <button class="btnIA" onclick="mostrarIA('grok', this)" title="Abrir Grok">Grok</button>
-          <button class="btnIA" onclick="mostrarIA('lechat', this)" title="Abrir Le Chat">Le Chat</button>
-          <button class="btnIA" onclick="mostrarIA('sabia', this)" title="Abrir Sabia">Sabia</button>
-          <button class="btnIA" onclick="mostrarIA('qwenchat', this)" title="Abrir Qwen">Qwen</button>
-          <button class="btnIA" onclick="mostrarIA('iadod', this)" title="Abrir Iadod">Iadod</button>
+          </iframe>
         </div>
-        <!-- Iframes de IA opcionais (comentados)
-        <div id="iframesContainer">
-          <div class="iframe-wrapper">
-            <h3>Perplexity</h3>
-            <iframe src="https://www.perplexity.ai/" title="Perplexity" loading="lazy" style="display: block;"></iframe>
-          </div>
-          <div class="iframe-wrapper">
-            <h3>Qwen</h3>
-            <iframe src="https://chat.qwen.ai/" title="Qwen" loading="lazy" style="display: block;"></iframe>
+
+        <!-- Seção de Ferramentas de IA -->
+        <div id="secaoIA">
+          <h2>Ferramentas de IA</h2>
+          <div class="ia-buttons">
+            <button class="btnIA" onclick="mostrarIA('chatgpt', this)" title="Abrir ChatGPT">ChatGPT</button>
+            <button class="btnIA" onclick="mostrarIA('gemini', this)" title="Abrir Gemini">Gemini</button>
+            <button class="btnIA" onclick="mostrarIA('perplexity', this)" title="Abrir Perplexity">Perplexity</button>
+            <button class="btnIA" onclick="mostrarIA('copilot', this)" title="Abrir Copilot">Copilot</button>
+            <button class="btnIA" onclick="mostrarIA('deepseek', this)" title="Abrir DeepSeek">DeepSeek</button>
+            <button class="btnIA" onclick="mostrarIA('claude', this)" title="Abrir Claude">Claude</button>
+            <button class="btnIA" onclick="mostrarIA('grok', this)" title="Abrir Grok">Grok</button>
+            <button class="btnIA" onclick="mostrarIA('lechat', this)" title="Abrir Le Chat">Le Chat</button>
+            <button class="btnIA" onclick="mostrarIA('sabia', this)" title="Abrir Sabia">Sabia</button>
+            <button class="btnIA" onclick="mostrarIA('qwenchat', this)" title="Abrir Qwen">Qwen</button>
+            <button class="btnIA" onclick="mostrarIA('iadod', this)" title="Abrir Iadod">Iadod</button>
           </div>
         </div>
-        -->
       </div>
-    </div> <!-- .app-container -->
-  </div> <!-- #mainContent -->
+      <!-- Fim da main-content -->
+    </div>
+    <!-- Fim da app-container -->
+  </div>
+  <!-- Fim do mainContent -->
+
+  <!-- Modal para criação/edição de eventos -->
+  <div id="eventModal" class="modal">
+    <div class="modal-content">
+      <span id="closeEventModal" class="close">&times;</span>
+      <h2 id="modalTitle">Novo Evento</h2>
+      <input type="text" id="eventTitle" placeholder="Título do evento" />
+      <div style="text-align: right;">
+        <button id="saveEventBtn">Salvar</button>
+        <button id="cancelEventBtn">Cancelar</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Scripts (ordem de carregamento) -->
   <script type="module" src="js/firebase.js"></script>

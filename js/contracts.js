@@ -63,10 +63,8 @@ window.addRow = async function addRow() {
     const td = document.createElement('td');
     td.style.padding = '10px';
     td.style.border = '1px solid #ddd';
-    // Para manter o padrão de fundo invertido entre as células, podemos definir individualmente
     td.style.backgroundColor = newRow.style.backgroundColor;
     td.setAttribute('contenteditable', 'true');
-    // Valor padrão para nova linha: se for a coluna SEI, podemos colocar um <strong> vazio
     if (i === 0) {
       td.innerHTML = '<strong></strong>';
     } else {
@@ -166,16 +164,13 @@ window.renderTabelaContratos = function renderTabelaContratos() {
     snapshot.forEach(docSnap => {
       const contract = docSnap.data();
       const tr = document.createElement('tr');
-      // Alterna fundo entre linhas para efeito de zebra (simples exemplo)
       tr.style.backgroundColor = (tbody.rows.length % 2 === 0) ? '#f9f9f9' : '#ffffff';
       
-      // Cria as 5 células com os dados
       const tdSei = document.createElement('td');
       tdSei.style.padding = '10px';
       tdSei.style.border = '1px solid #ddd';
       tdSei.style.backgroundColor = tr.style.backgroundColor;
       tdSei.setAttribute('contenteditable', 'true');
-      // Se o campo "sei" estiver preenchido, insere-o dentro de <strong>
       tdSei.innerHTML = contract.sei ? `<strong>${contract.sei}</strong>` : '<strong></strong>';
 
       const tdContrato = document.createElement('td');
@@ -227,12 +222,10 @@ window.initEditableTable = function initEditableTable() {
     return;
   }
 
-  // Quando o usuário editar uma célula, mostra o botão de salvar
   table.addEventListener('input', () => {
     document.getElementById('updateTableBtn').style.display = 'inline-block';
   });
 
-  // Configura atalhos e seleção para formatação (opcional)
   table.addEventListener('click', () => updateSelection());
   table.addEventListener('keyup', () => updateSelection());
 };
@@ -247,15 +240,12 @@ function updateSelection() {
     const editable = range.commonAncestorContainer.parentElement.closest('[contenteditable="true"]');
     if (editable) {
       document.getElementById('tableFormattingTools').dataset.activeCell = '';
-      // Para identificar a célula de forma única, pode-se definir um seletor ou armazenar uma referência
-      // Exemplo: armazenando um atributo data-activeCell com um identificador exclusivo
-      // Neste exemplo, usaremos a referência direta:
       document.getElementById('tableFormattingTools').dataset.activeCell = editable;
     }
   }
 }
 
-// Opcional: atalhos de teclado para formatação
+// Atalhos de teclado para formatação
 function handleShortcuts(e) {
   if (e.target.closest('#editableTable')) {
     if (e.ctrlKey) {
