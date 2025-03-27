@@ -1,44 +1,150 @@
-/* tasks.css */
+/* tasks.css - Estilos otimizados para a seção de tarefas */
+
+/* Container principal da seção de tarefas */
 .tasks-section {
   width: 95%;
-  max-width: calc(100% - 40px);
+  max-width: 100%; /* Simplificado para melhor responsividade */
   margin: 30px auto;
   padding: 20px;
   background: #fff;
   border-radius: 8px;
   box-shadow: var(--shadow-default);
-  transition: background-color 0.3s;
+  transition: all 0.3s ease; /* Transição suave para todas as propriedades */
 }
+
+/* Estilos para tema escuro */
 body.dark .tasks-section {
   background: #1e1e1e;
   box-shadow: var(--shadow-dark);
+  color: #f0f0f0; /* Melhor contraste para texto no modo escuro */
 }
+
+/* Estilos para tema azul */
 body.blue .tasks-section {
   background: #f0f7ff;
 }
 
+/* Estilo do input de nova tarefa */
+#taskInput {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+/* Estilo quando o input está em foco */
+#taskInput:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+/* Lista de tarefas */
 #tasksList {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
+
+/* Itens individuais da lista */
 #tasksList li {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 5px;
-  border-bottom: 1px solid #ccc;
+  padding: 12px 8px;
+  border-bottom: 1px solid #eee;
+  transition: all 0.2s ease;
 }
+
+/* Estilos para tema escuro nos itens */
 body.dark #tasksList li {
+  border-bottom-color: #444;
   background: #333;
 }
+
+/* Estilos para tema azul nos itens */
 body.blue #tasksList li {
   background: #dbeafe;
+  border-bottom-color: #b3d1ff;
 }
+
+/* Checkbox para marcar tarefa como completa */
+.task-checkbox {
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+/* Texto da tarefa */
+.task-text {
+  flex: 1;
+  word-break: break-word; /* Quebra de linha para textos longos */
+}
+
+/* Estilo para tarefa completada */
+.task-completed {
+  text-decoration: line-through;
+  opacity: 0.7;
+  color: #777;
+}
+
+/* Botão de remover tarefa */
 .remove-task {
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #666;
+  color: #999;
+  padding: 6px;
+  margin-left: 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
 }
+
+/* Efeito hover no botão de remover */
 .remove-task:hover {
   color: var(--color-error);
+  background: rgba(255, 0, 0, 0.1);
+}
+
+/* Notificações (substitui os alerts) */
+.task-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 4px;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 1000;
+  max-width: 300px;
+}
+
+/* Estilo para notificação de sucesso */
+.notification-success {
+  background-color: #4CAF50;
+  opacity: 1;
+}
+
+/* Estilo para notificação de erro */
+.notification-error {
+  background-color: #f44336;
+  opacity: 1;
+}
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 600px) {
+  .tasks-section {
+    padding: 15px;
+    width: 100%;
+    border-radius: 0;
+    margin: 20px 0;
+  }
+  
+  #tasksList li {
+    padding: 10px 5px;
+  }
 }

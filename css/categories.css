@@ -1,4 +1,6 @@
 /* categories.css */
+
+/* Container principal das categorias */
 .container {
   display: flex;
   flex-wrap: wrap;
@@ -12,14 +14,21 @@
   box-shadow: var(--shadow-default);
   transition: background-color 0.3s;
 }
+
+/* Tema escuro para o container */
 body.dark .container {
   background: #1e1e1e;
   box-shadow: var(--shadow-dark);
 }
+
+/* Tema azul para o container */
 body.blue .container {
   background: #f0f7ff;
 }
+
+/* Estilo base para cada categoria */
 .category {
+  position: relative;
   background: #fff;
   padding: 20px;
   text-align: center;
@@ -27,65 +36,179 @@ body.blue .container {
   box-shadow: var(--shadow-default);
   transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s;
   cursor: grab;
-  position: relative;
   width: 240px;
 }
+
+/* Tema escuro para categorias */
 body.dark .category {
   background: #1e1e1e;
   box-shadow: var(--shadow-dark);
   color: var(--text-color);
 }
+
+/* Tema azul para categorias */
 body.blue .category {
   background: #fff;
 }
-.category:hover {
+
+/* Efeito hover e focus para acessibilidade */
+.category:hover,
+.category:focus-within {
   transform: scale(1.05);
+  outline: 2px solid var(--color-secondary);
 }
+
+/* Estilo durante arraste */
 .category.dragging {
   opacity: 0.5;
   cursor: grabbing;
 }
+
+/* Estilo do título da categoria */
 .category h3 {
   margin: 0 0 10px 0;
+  font-size: 1.2rem;
+  color: inherit;
 }
+
+/* Estilo da descrição da categoria */
 .category p {
   margin: 0 0 10px 0;
+  color: inherit;
+  opacity: 0.8;
 }
+
+/* Estilo dos links na categoria */
 .category a {
-  color: blue;
+  color: var(--color-primary);
   text-decoration: underline;
+  transition: color 0.2s;
 }
+
+.category a:hover,
+.category a:focus {
+  color: var(--color-primary-dark);
+}
+
+/* Container da lista de subitens */
 .subitems-list {
+  position: relative;
+  min-height: 50px;
+  padding: 10px 0;
+}
+
+/* Lista de subitens */
+.subitems-ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
   gap: 5px;
-  margin: 10px 0;
 }
-.subitems-list li {
-  background: #f0f0f0;
-  padding: 4px 8px;
-  border-radius: 4px;
+
+/* Itens da lista de subitens */
+.subitems-ul li {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  background: #f0f0f0;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
 }
-body.dark .subitems-list li {
+
+/* Mensagem quando não há subitens */
+.subitems-ul .empty-message {
+  background: transparent;
+  color: inherit;
+  opacity: 0.7;
+  text-align: center;
+  padding: 10px;
+}
+
+/* Tema escuro para subitens */
+body.dark .subitems-ul li {
   background: #333;
+  color: var(--text-color);
 }
-body.blue .subitems-list li {
+
+/* Tema azul para subitens */
+body.blue .subitems-ul li {
   background: #dbeafe;
 }
-.search-subitems {
-  width: 100%;
-  padding: 8px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 14px;
+
+/* Links nos subitens */
+.subitems-ul a {
+  color: var(--color-primary);
+  text-decoration: none;
+  flex-grow: 1;
+  text-align: left;
+  padding: 2px 0;
 }
 
-/* Botão pequeno para adicionar categoria */
+.subitems-ul a:hover,
+.subitems-ul a:focus {
+  text-decoration: underline;
+}
+
+/* Botão de remover subitem */
+.subitems-ul .remove-subitem {
+  background: transparent;
+  border: none;
+  color: #e74c3c;
+  cursor: pointer;
+  padding: 0 5px;
+  font-size: 1.2rem;
+  line-height: 1;
+  transition: transform 0.2s;
+}
+
+.subitems-ul .remove-subitem:hover,
+.subitems-ul .remove-subitem:focus {
+  transform: scale(1.2);
+  outline: none;
+}
+
+/* Loader para carregamento */
+.loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.loader .spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(0,0,0,0.1);
+  border-radius: 50%;
+  border-top-color: var(--color-primary);
+  animation: spin 1s linear infinite;
+}
+
+/* Texto escondido visualmente mas acessível */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Animação do spinner */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Botão de adicionar categoria */
 .small-add-category-btn {
-  background: #3498db;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 50%;
@@ -99,50 +222,42 @@ body.blue .subitems-list li {
   margin: 5px;
   transition: background-color 0.2s;
 }
-.small-add-category-btn:hover {
-  background: #2980b9;
-}
-/* Botão pequeno para adicionar categoria */
-.small-add-category-btn {
-  background: #3498db;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  font-size: 16px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin: 5px;
-  transition: background-color 0.2s;
-}
-.small-add-category-btn:hover {
-  background: #2980b9;
+
+.small-add-category-btn:hover,
+.small-add-category-btn:focus {
+  background: var(--color-primary-dark);
+  outline: none;
 }
 
-/* Botão de remoção de categoria (pequeno "X" vermelho) já configurado inline, mas pode ser definido aqui para consistência */
+/* Botão de remover categoria */
 .remove-category-btn {
   position: absolute;
   top: 5px;
   right: 5px;
   background: transparent;
   border: none;
-  color: red;
-  font-size: 12px;
+  color: #e74c3c;
+  font-size: 14px;
   cursor: pointer;
+  padding: 5px;
+  line-height: 1;
 }
 
-
-/* Animação para exibição de subitem (não utilizado atualmente) */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to   { opacity: 1; transform: translateY(0); }
+.remove-category-btn:hover,
+.remove-category-btn:focus {
+  transform: scale(1.1);
+  outline: none;
 }
+
+/* Estilos para impressão */
 @media print {
   .category a::after {
     content: " (" attr(href) ")";
     font-size: 0.9em;
+  }
+  
+  .remove-category-btn,
+  .remove-subitem {
+    display: none !important;
   }
 }
