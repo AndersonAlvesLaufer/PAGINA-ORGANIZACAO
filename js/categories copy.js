@@ -1,22 +1,11 @@
 // js/categories.js
 
-// Importa a instância do banco de dados Firebase configurada em firebase.js
 import { db } from './firebase.js';
-
-// Importa funções específicas do Firestore para operações CRUD
-// collection: referencia uma coleção
-// addDoc: adiciona novos documentos
-// doc: referencia um documento específico
-// onSnapshot: listener em tempo real
-// deleteDoc: remove documentos
-// updateDoc: atualiza documentos
-// getDoc: obtém um documento (não usado neste arquivo)
 import { collection, addDoc, doc, onSnapshot, deleteDoc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
-// Referência para a coleção 'categories' no Firestore
 const categoriesCollection = collection(db, 'categories');
 
-// Array de categorias fixas (não editáveis pelo usuário)
+// Lista local das categorias fixas (sempre exibidas e não removíveis)
 const fixedCategories = [
   {
     id: 'card-direito',
@@ -25,6 +14,7 @@ const fixedCategories = [
     link: 'https://onedrive.live.com/?id=E8E795D714B72B1C%213194&cid=E8E795D714B72B1C',
     fixed: true,
     order: 0,
+    // Adicionando subitens estáticos para esta categoria
     staticSubitems: [
       { name: 'Vade Mecum', url: 'https://www.planalto.gov.br/ccivil_03/leis/principal.htm' },
       { name: 'Jurisprudência STF', url: 'https://jurisprudencia.stf.jus.br/pages/search' }
@@ -37,6 +27,7 @@ const fixedCategories = [
     link: 'onedrive://fotos_e_documentos',
     fixed: true,
     order: 1,
+    // Adicionando subitens estáticos para esta categoria
     staticSubitems: [
       { name: 'Google Drive Pessoal', url: 'https://drive.google.com' },
       { name: 'Fotos Familiares', url: 'onedrive://fotos_familiares' }
@@ -49,6 +40,7 @@ const fixedCategories = [
     link: 'onedrive://indice_de_economia',
     fixed: true,
     order: 2,
+    // Adicionando subitens estáticos para esta categoria
     staticSubitems: [
       { name: 'B3', url: 'https://www.b3.com.br' },
       { name: 'Banco Central', url: 'https://www.bcb.gov.br' }
@@ -61,6 +53,7 @@ const fixedCategories = [
     link: 'onedrive://trabalho_tj',
     fixed: true,
     order: 3,
+    // Subitens já existentes, agora em formato padronizado
     staticSubitems: [
       { name: 'SEI', url: 'https://sei.tjpr.jus.br/sei/' },
       { name: 'Boletim Interno', url: 'https://www.tjpr.jus.br/group/guest/boletim-interno' }
@@ -73,6 +66,7 @@ const fixedCategories = [
     link: 'onedrive://ferramentas',
     fixed: true,
     order: 4,
+    // Adicionando subitens estáticos para esta categoria
     staticSubitems: [
       { name: 'Conversor PDF', url: 'https://www.ilovepdf.com/pt' },
       { name: 'Tradutor DeepL', url: 'https://www.deepl.com/translator' }
@@ -80,49 +74,8 @@ const fixedCategories = [
   }
 ];
 
-// Sistema de notificação (Substitui os alerts)
-const notificationQueue = [];
-let isNotificationShowing = false;
-
 /**
- * Mostra uma notificação para o usuário
- * @param {string} message - Mensagem a ser exibida
- * @param {string} type - Tipo de notificação (success, error, warning, info)
- */
-function showNotification(message, type = 'info') {
-  notificationQueue.push({ message, type });
-  processNotificationQueue();
-}
-
-/**
- * Processa a fila de notificações
- */
-function processNotificationQueue() {
-  if (isNotificationShowing || notificationQueue.length === 0) return;
-
-  isNotificationShowing = true;
-  const { message, type } = notificationQueue.shift();
-  
-  const notification = document.createElement('div');
-  notification.className = `notification ${type}`;
-  notification.textContent = message;
-  
-  document.body.appendChild(notification);
-  
-  setTimeout(() => {
-    notification.classList.add('fade-out');
-    setTimeout(() => {
-      notification.remove();
-      isNotificationShowing = false;
-      processNotificationQueue();
-    }, 500);
-  }, 3000);
-}
-
-/**
- * Adiciona uma nova categoria ao Firestore
- * @param {string} name - Nome da categoria
- * @param {boolean} fixed - Se a categoria é fixa
+ * Adiciona uma nova categoria dinâmica ao Firestore.
  */
 window.addCategory = async function addCategory(name, fixed = false) {
   try {
@@ -134,42 +87,40 @@ window.addCategory = async function addCategory(name, fixed = false) {
       pinned: false,
       order: Date.now()
     });
-    showNotification('Categoria adicionada com sucesso!', 'success');
+    console.log('Categoria adicionada no Firestore!');
+    alert('Categoria adicionada com sucesso!');
   } catch (error) {
     console.error('Erro ao adicionar categoria:', error);
-    showNotification('Erro ao adicionar categoria. Tente novamente.', 'error');
+    alert('Erro ao adicionar categoria. Tente novamente.');
   }
 };
 
 /**
- * Remove uma categoria do Firestore
- * @param {string} categoryId - ID da categoria a ser removida
+ * Remove uma categoria dinâmica do Firestore.
+ * Categorias fixas (presentes no array fixedCategories) não podem ser removidas.
  */
 window.removeCategory = async function removeCategory(categoryId) {
   if (!categoryId) {
-    showNotification('Informe o ID da categoria a remover.', 'warning');
+    alert('Informe o ID da categoria a remover.');
     return;
   }
-  
   const isFixed = fixedCategories.find(cat => cat.id === categoryId);
   if (isFixed) {
-    showNotification('Esta categoria é fixa e não pode ser removida.', 'warning');
+    alert('Esta categoria é fixa e não pode ser removida.');
     return;
   }
-  
   try {
     await deleteDoc(doc(db, 'categories', categoryId));
-    showNotification('Categoria removida com sucesso!', 'success');
+    console.log('Categoria removida do Firestore!');
+    alert('Categoria removida com sucesso!');
   } catch (error) {
     console.error('Erro ao remover categoria:', error);
-    showNotification('Erro ao remover categoria. Tente novamente.', 'error');
+    alert('Erro ao remover categoria. Tente novamente.');
   }
 };
 
 /**
  * Renderiza os subitens estáticos de uma categoria
- * @param {Object} category - Objeto da categoria
- * @returns {string} HTML dos subitens
  */
 function renderStaticSubitems(category) {
   if (!category.staticSubitems || category.staticSubitems.length === 0) {
@@ -190,21 +141,23 @@ function renderStaticSubitems(category) {
 }
 
 /**
- * Renderiza todas as categorias fixas
- * @returns {string} HTML das categorias fixas
+ * Função para renderizar categorias fixas (HTML estático)
  */
 function renderFixedCategories() {
   let html = '';
   
   fixedCategories.forEach(cat => {
+    // Obtém os subitens estáticos para esta categoria
     const subitemsContent = renderStaticSubitems(cat);
     
     html += `
       <div class="category" data-id="${cat.id}" draggable="false">
+        <!-- Botão de remover não exibido para fixas -->
         <button class="remove-category-btn" style="display: none;"></button>
         <button class="pin-btn" title="Fixado" disabled><i class="fas fa-thumbtack"></i></button>
         <h3>${cat.name}</h3>
         <p>${cat.description}</p>
+        <a href="${cat.link}" target="_blank">Documentos</a>
         <div class="subitems-list" data-subitem-id="${cat.id}">
           ${subitemsContent}
         </div>
@@ -217,58 +170,8 @@ function renderFixedCategories() {
 }
 
 /**
- * Função para debounce (melhoria de performance)
- * @param {Function} func - Função a ser executada
- * @param {number} wait - Tempo de espera em ms
- * @returns {Function} Função com debounce
- */
-function debounce(func, wait) {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
-
-/**
- * Atualiza a ordem das categorias no Firestore (com debounce)
- */
-const updateCardOrder = debounce(async function() {
-  const container = document.getElementById('buttonContainer');
-  if (!container) return;
-
-  const cards = container.querySelectorAll('.category[draggable="true"]');
-  const updates = [];
-  const batchSize = 5; // Processa em lotes para melhor performance
-  let processed = 0;
-
-  while (processed < cards.length) {
-    const batch = Array.from(cards)
-      .slice(processed, processed + batchSize)
-      .map((card, index) => {
-        const id = card.dataset.id;
-        return updateDoc(doc(db, 'categories', id), { 
-          order: processed + index 
-        });
-      });
-
-    try {
-      await Promise.all(batch);
-      processed += batchSize;
-    } catch (error) {
-      console.error('Erro ao atualizar ordem de categorias:', error);
-      showNotification('Erro ao atualizar ordem', 'error');
-      break;
-    }
-  }
-}, 500); // 500ms de debounce
-
-/**
- * Carrega e renderiza todas as categorias
+ * Renderiza as categorias fixas (do array local) e as dinâmicas (do Firestore) no container.
+ * As fixas são sempre exibidas e não removíveis nem arrastáveis.
  */
 window.loadCategories = function loadCategories() {
   const container = document.getElementById('buttonContainer');
@@ -277,6 +180,7 @@ window.loadCategories = function loadCategories() {
     return;
   }
   
+  // Ouve as categorias dinâmicas do Firestore (somente aquelas com fixed == false)
   onSnapshot(categoriesCollection, (snapshot) => {
     let dynamicCategories = [];
     snapshot.forEach(docSnap => {
@@ -286,13 +190,14 @@ window.loadCategories = function loadCategories() {
         dynamicCategories.push(data);
       }
     });
-    
+    // Ordena as dinâmicas por "order"
     dynamicCategories.sort((a, b) => (a.order || 0) - (b.order || 0));
     
     let dynamicHTML = '';
     dynamicCategories.forEach(cat => {
       dynamicHTML += `
         <div class="category" data-id="${cat.id}" draggable="true">
+          <!-- Pequeno "X" vermelho no canto superior direito para remover -->
           <button class="remove-category-btn" title="Remover categoria" onclick="removeCategory('${cat.id}')" style="position: absolute; top: 5px; right: 5px; background: transparent; border: none; color: red; font-size: 12px;">X</button>
           <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
           <h3>${cat.name}</h3>
@@ -318,12 +223,11 @@ window.loadCategories = function loadCategories() {
     if (typeof window.initSubitemsAll === 'function') window.initSubitemsAll();
   }, error => {
     console.error('Erro ao carregar categorias:', error);
-    showNotification('Erro ao carregar categorias', 'error');
   });
 };
 
 /**
- * Exibe um prompt para adicionar nova categoria
+ * Exibe um prompt para adicionar uma nova categoria dinâmica.
  */
 window.addCategoryPrompt = function addCategoryPrompt() {
   const name = prompt('Nome da nova categoria:')?.trim();
@@ -333,20 +237,17 @@ window.addCategoryPrompt = function addCategoryPrompt() {
 };
 
 /**
- * Inicializa os eventos de drag-and-drop
+ * Inicializa os eventos de drag-and-drop e de "pin" para categorias dinâmicas.
+ * Categorias fixas (draggable="false") não recebem esses eventos.
  */
 window.initCards = function initCards() {
   const categories = document.querySelectorAll('.category[draggable="true"]');
   categories.forEach(category => {
-    category.addEventListener('dragstart', () => {
-      category.classList.add('dragging');
-    });
-    
+    category.addEventListener('dragstart', () => category.classList.add('dragging'));
     category.addEventListener('dragend', async () => {
       category.classList.remove('dragging');
       await updateCardOrder();
     });
-    
     const pinBtn = category.querySelector('.pin-btn');
     if (pinBtn) {
       pinBtn.addEventListener('click', () => togglePin(category));
@@ -358,7 +259,6 @@ window.initCards = function initCards() {
     e.preventDefault();
     const dragging = document.querySelector('.dragging');
     if (!dragging) return;
-    
     const afterElement = getDragAfterElement(container, e.clientY);
     if (!afterElement) {
       container.appendChild(dragging);
@@ -368,12 +268,9 @@ window.initCards = function initCards() {
   });
 };
 
-/**
- * Helper para determinar a posição durante o drag-and-drop
- */
+// Helper para determinar a posição de inserção no drag-and-drop (somente para categorias dinâmicas)
 function getDragAfterElement(container, y) {
   const draggableElements = [...container.querySelectorAll('.category[draggable="true"]:not(.dragging)')];
-  
   return draggableElements.reduce((closest, child) => {
     const box = child.getBoundingClientRect();
     const offset = y - box.top - box.height / 2;
@@ -385,25 +282,32 @@ function getDragAfterElement(container, y) {
 }
 
 /**
- * Alterna o status "pinned" de uma categoria
- * @param {HTMLElement} card - Elemento HTML da categoria
+ * Atualiza a ordem (campo "order") das categorias dinâmicas no Firestore.
+ */
+async function updateCardOrder() {
+  const container = document.getElementById('buttonContainer');
+  const cards = container.querySelectorAll('.category[draggable="true"]');
+  let updates = [];
+  cards.forEach((card, index) => {
+    const id = card.dataset.id;
+    updates.push(updateDoc(doc(db, 'categories', id), { order: index }));
+  });
+  try {
+    await Promise.all(updates);
+    console.log('Ordem de categorias dinâmicas atualizada.');
+  } catch (error) {
+    console.error('Erro ao atualizar ordem de categorias:', error);
+  }
+}
+
+/**
+ * Alterna o status "pinned" de uma categoria dinâmica.
  */
 function togglePin(card) {
   const cardId = card.dataset.id;
   const newStatus = !card.classList.contains('pinned');
-  
   card.classList.toggle('pinned', newStatus);
   updateDoc(doc(db, 'categories', cardId), { pinned: newStatus })
     .then(() => console.log(`Categoria ${cardId} pin: ${newStatus}`))
-    .catch(error => {
-      console.error('Erro ao atualizar pin:', error);
-      showNotification('Erro ao fixar/desfixar categoria', 'error');
-    });
+    .catch(error => console.error('Erro ao atualizar pin:', error));
 }
-
-// Inicializa quando o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', () => {
-  if (typeof window.loadCategories === 'function') {
-    window.loadCategories();
-  }
-});
