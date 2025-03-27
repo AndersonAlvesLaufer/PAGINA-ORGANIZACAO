@@ -1,0 +1,600 @@
+/* global.css */
+
+/* Variáveis Globais de Cor e Estilo */
+:root {
+  --color-primary: #3498db;
+  --color-primary-dark: #2980b9;
+  --color-secondary: #4a90e2;
+  --color-secondary-dark: #357abd;
+  --color-success: #2ecc71;
+  --color-success-dark: #27ae60;
+  --color-danger: #e74c3c;
+  --color-danger-dark: #c0392b;
+  --color-warning: #f1c40f;
+  --color-warning-dark: #f39c12;
+  --color-info: #3498db;
+  --color-info-dark: #2980b9;
+  --color-light: #f8f9fa;
+  --color-dark: #343a40;
+  --color-muted: #6c757d;
+
+  --text-color-light: #333;
+  --bg-color-light: #f0f4f8;
+  --section-bg-light: #fff;
+  --border-color-light: #ddd;
+  --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  --text-color-dark: #e0e0e0;
+  --bg-color-dark: #121212;
+  --section-bg-dark: #1e1e1e;
+  --border-color-dark: #444;
+  --shadow-dark: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  --text-color-blue: #1e3a8a;
+  --bg-color-blue: #e6f0fa;
+  --section-bg-blue: #dbeafe;
+  --border-color-blue: #a3c4ff;
+  --shadow-blue: 0 2px 8px rgba(0, 100, 200, 0.15);
+
+  --font-family: 'Segoe UI', sans-serif;
+  --border-radius: 6px;
+  --transition-speed: 0.2s ease;
+
+
+/* Variável para altura do header */
+--header-height: 100px; /* Ajuste este valor! */
+--font-family: 'Segoe UI', sans-serif;
+--border-radius: 6px;
+--transition-speed: 0.2s ease;
+}
+
+/* Estilos Base do Body */
+html { box-sizing: border-box; }
+*, *:before, *:after { box-sizing: inherit; }
+body {
+  font-family: var(--font-family);
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color-light);
+  color: var(--text-color-light);
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+  line-height: 1.6;
+  height: 100vh; /* Ocupa altura total */
+  overflow: hidden; /* Impede scroll no body */
+}
+body.dark { background-color: var(--bg-color-dark); color: var(--text-color-dark); }
+body.blue { background-color: var(--bg-color-blue); color: var(--text-color-blue); }
+
+
+/* === NOVO: Estilos para o Header Principal === */
+.main-header {
+  background-color: #0056b3; /* Azul forte específico */
+  /* Ou use uma variável: background-color: var(--color-primary-dark); */
+  padding: 15px 25px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  position: relative;
+  z-index: 10;
+  /* A altura será definida pelo padding e tamanho da fonte do H1 */
+}
+/* Estilos Base do Body */
+html { box-sizing: border-box; }
+*, *:before, *:after { box-sizing: inherit; }
+body {
+  font-family: var(--font-family);
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color-light);
+  color: var(--text-color-light);
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+  line-height: 1.6;
+  height: 100vh; /* Ocupa altura total */
+  overflow: hidden; /* Impede scroll no body */
+}
+body.dark { background-color: var(--bg-color-dark); color: var(--text-color-dark); }
+body.blue { background-color: var(--bg-color-blue); color: var(--text-color-blue); }
+
+
+/* === NOVO: Estilos para o Header Principal === */
+.main-header {
+  background-color: #0056b3; /* Azul forte específico */
+  /* Ou use uma variável: background-color: var(--color-primary-dark); */
+  padding: 15px 25px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  position: relative;
+  z-index: 10;
+  /* A altura será definida pelo padding e tamanho da fonte do H1 */
+}
+body.dark .main-header { background-color: var(--color-dark); border-bottom: 1px solid var(--border-color-dark); }
+body.blue .main-header { background-color: var(--text-color-blue); } /* Azul escuro no tema blue */
+
+#main-app-title {
+  color: white;
+  font-size: 4rem; /* Tamanho maior */
+  font-weight: 700; /* Bold */
+  text-align: center;
+  margin: 0;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.4); /* Sombra um pouco mais forte */
+  letter-spacing: 1px; /* Espaçamento leve entre letras */
+}
+/* === FIM: Estilos Header Principal === */
+/* === FIM: Estilos Header Principal === */
+
+/* Temas */
+body.dark {
+  background-color: var(--bg-color-dark);
+  color: var(--text-color-dark);
+}
+body.blue {
+  background-color: var(--bg-color-blue);
+  color: var(--text-color-blue);
+}
+
+/* === AJUSTE LAYOUT PRINCIPAL (Com Header) === */
+.app-container {
+  display: flex;
+  /* Altura calculada: 100% da viewport MENOS a altura do header */
+  height: calc(100vh - var(--header-height));
+  width: 100%;
+}
+
+/* Wrappers das colunas (70/30) */
+.main-content-wrapper,
+.ia-section-wrapper {
+  height: 100%; /* Ocupa 100% da altura do PAI (.app-container) */
+  overflow-y: auto; /* Scroll DENTRO de cada coluna */
+  padding: 20px;
+  position: relative;
+  background-color: var(--bg-color-light);
+  transition: background-color var(--transition-speed);
+}
+.main-content-wrapper { flex: 7; /* Proporção 70% */ }
+.ia-section-wrapper {
+  flex: 3; /* Proporção 30% */
+  border-left: 1px solid var(--border-color-light);
+  background-color: var(--section-bg-light);
+  transition: background-color var(--transition-speed), border-color var(--transition-speed);
+}
+/* Estilos de tema para os wrappers */
+body.dark .main-content-wrapper { background-color: var(--bg-color-dark); }
+body.blue .main-content-wrapper { background-color: var(--bg-color-blue); }
+body.dark .ia-section-wrapper { background-color: var(--section-bg-dark); border-left-color: var(--border-color-dark); }
+body.blue .ia-section-wrapper { background-color: var(--section-bg-blue); border-left-color: var(--border-color-blue); }
+/* ============================================================ */
+
+/* Wrapper do Conteúdo Principal (70%) */
+.main-content-wrapper {
+  flex: 7; /* Proporção 7 */
+  /* Ou use: flex: 0 0 70%; */
+  height: 100%; /* Ocupa altura total do pai flex */
+  overflow-y: auto; /* Adiciona scroll vertical APENAS aqui */
+  padding: 20px;
+  position: relative; /* Para posicionar o botão de tema */
+  background-color: var(--bg-color-light); /* Fundo padrão */
+  transition: background-color var(--transition-speed); /* Transição de fundo */
+}
+body.dark .main-content-wrapper { background-color: var(--bg-color-dark); }
+body.blue .main-content-wrapper { background-color: var(--bg-color-blue); }
+
+
+/* Wrapper da Seção IA (30%) */
+.ia-section-wrapper {
+  flex: 3; /* Proporção 3 */
+  /* Ou use: flex: 0 0 30%; */
+  height: 100%; /* Ocupa altura total do pai flex */
+  overflow-y: auto; /* Adiciona scroll vertical APENAS aqui */
+  padding: 20px;
+  background-color: var(--section-bg-light);
+  border-left: 1px solid var(--border-color-light);
+  transition: background-color var(--transition-speed), border-color var(--transition-speed);
+  position: relative; /* Garante que não use 'fixed' */
+}
+
+body.dark .ia-section-wrapper {
+  background-color: var(--section-bg-dark);
+  border-left-color: var(--border-color-dark);
+}
+body.blue .ia-section-wrapper {
+  background-color: var(--section-bg-blue);
+  border-left-color: var(--border-color-blue);
+}
+/* ============================================================ */
+
+
+/* Container Genérico de Seção (Dentro das colunas principais) */
+.section-container {
+  width: 100%; /* Ocupa largura do pai */
+  /* max-width: 100%; */ /* Removido, já que width é 100% */
+  margin: 0 auto 30px auto; /* Centraliza se houver espaço, margem inferior */
+  padding: 20px;
+  background-color: var(--section-bg-light);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  transition: background-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+body.dark .section-container {
+  background-color: var(--section-bg-dark);
+  box-shadow: var(--shadow-dark);
+}
+body.blue .section-container {
+  background-color: #fff; /* Fundo branco no tema azul */
+  box-shadow: var(--shadow-blue);
+}
+
+/* Cabeçalho da Seção */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color-light);
+    cursor: pointer; /* Indica que o header pode ser clicado para recolher */
+}
+body.dark .section-header { border-bottom-color: var(--border-color-dark); }
+body.blue .section-header { border-bottom-color: var(--border-color-blue); }
+
+.section-header h2 {
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+/* Botão Recolher/Expandir Seção */
+.collapse-btn {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: var(--color-muted);
+    padding: 5px;
+    transition: transform var(--transition-speed), color var(--transition-speed);
+}
+.collapse-btn:hover {
+    color: var(--color-primary);
+}
+.collapse-btn i {
+    transition: transform var(--transition-speed);
+}
+.collapse-btn[aria-expanded="false"] i {
+    transform: rotate(-90deg); /* Gira para a direita */
+}
+
+/* Conteúdo da Seção (para ser ocultado) */
+.section-content {
+    transition: max-height 0.3s ease-out, opacity 0.2s ease-in-out, visibility 0.3s; /* Transição suave */
+    max-height: 2000px; /* Um valor alto para garantir que caiba */
+    overflow: hidden; /* Necessário para transição de max-height */
+    opacity: 1;
+    visibility: visible;
+}
+.section-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    margin-top: 0; /* Remove margens quando colapsado */
+    padding-top: 0;
+    padding-bottom: 0;
+    border-top: none; /* Remove bordas se houver */
+}
+
+
+/* Estilos Gerais de Botões */
+.btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all var(--transition-speed);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  line-height: 1.5;
+  font-weight: 500; /* Um pouco mais de peso */
+}
+
+.btn:hover:not(:disabled) {
+  opacity: 0.85;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra sutil no hover */
+}
+.btn:active:not(:disabled) {
+  transform: translateY(0);
+  opacity: 1;
+  box-shadow: none;
+}
+.btn:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Variações de Botões */
+.btn-primary { background-color: var(--color-primary); color: white; }
+.btn-primary:hover:not(:disabled) { background-color: var(--color-primary-dark); }
+
+.btn-secondary { background-color: var(--color-muted); color: white; }
+.btn-secondary:hover:not(:disabled) { background-color: var(--color-dark); }
+body.dark .btn-secondary { background-color: #5a6268; color: white; }
+body.dark .btn-secondary:hover:not(:disabled) { background-color: #495057; }
+
+.btn-success { background-color: var(--color-success); color: white; }
+.btn-success:hover:not(:disabled) { background-color: var(--color-success-dark); }
+
+.btn-danger { background-color: var(--color-danger); color: white; }
+.btn-danger:hover:not(:disabled) { background-color: var(--color-danger-dark); }
+
+.btn-warning { background-color: var(--color-warning); color: var(--text-color-light); }
+.btn-warning:hover:not(:disabled) { background-color: var(--color-warning-dark); }
+
+.btn-info { background-color: var(--color-info); color: white; }
+.btn-info:hover:not(:disabled) { background-color: var(--color-info-dark); }
+
+/* Botões Pequenos */
+.btn-small {
+  padding: 6px 12px;
+  font-size: 0.875rem;
+  gap: 4px; /* Menor espaço interno */
+}
+
+/* Estilos para Inputs e Textareas */
+input[type="text"],
+input[type="url"],
+input[type="date"],
+input[type="password"],
+textarea,
+select {
+  width: 100%;
+  padding: 10px 12px; /* Ajustado padding */
+  margin-bottom: 10px;
+  border: 1px solid var(--border-color-light);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  background-color: #fff; /* Fundo branco por padrão */
+  color: var(--text-color-light);
+  transition: border-color var(--transition-speed), background-color var(--transition-speed), color var(--transition-speed), box-shadow var(--transition-speed);
+}
+/* Remove margin-bottom do último elemento em alguns containers */
+*:last-child > input, *:last-child > textarea, *:last-child > select {
+    margin-bottom: 0;
+}
+
+
+input[type="text"]:focus,
+input[type="url"]:focus,
+input[type="date"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15); /* Efeito de foco sutil */
+}
+
+body.dark input[type="text"],
+body.dark input[type="url"],
+body.dark input[type="date"],
+body.dark input[type="password"],
+body.dark textarea,
+body.dark select {
+  background-color: var(--section-bg-dark); /* Usa fundo da seção */
+  color: var(--text-color-dark);
+  border-color: var(--border-color-dark);
+}
+body.blue input[type="text"],
+body.blue input[type="url"],
+body.blue input[type="date"],
+body.blue input[type="password"],
+body.blue textarea,
+body.blue select {
+   background-color: #fff;
+   color: var(--text-color-blue);
+   border-color: var(--border-color-blue);
+}
+
+
+/* Spinner (Indicador de Loading) */
+.spinner-container {
+  display: none; /* Oculto por padrão, mostrado via JS */
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  min-height: 30px;
+}
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(0,0,0,0.1);
+  border-radius: 50%;
+  border-top-color: var(--color-primary);
+  animation: spin 1s linear infinite;
+}
+body.dark .spinner {
+    border-color: rgba(255,255,255,0.1);
+    border-top-color: var(--color-primary);
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Modal Base Styles */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  z-index: 1050;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto; /* Permite scroll no overlay se modal for muito alto */
+  background-color: rgba(0, 0, 0, 0.6); /* Mais escuro */
+  /* transition: opacity var(--transition-speed); */
+}
+
+.modal-content {
+  background-color: var(--bg-color-light); /* Usa cor de fundo principal */
+  color: var(--text-color-light);
+  margin: 8% auto; /* Reduzido margem superior */
+  padding: 25px 30px; /* Aumentado padding lateral */
+  border: none; /* Remove borda */
+  border-radius: var(--border-radius);
+  width: 90%;
+  max-width: 550px; /* Aumentado um pouco */
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Sombra mais pronunciada */
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+body.dark .modal-content {
+  background-color: var(--section-bg-dark); /* Fundo da seção no escuro */
+  color: var(--text-color-dark);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+body.blue .modal-content {
+  background-color: #fff;
+  color: var(--text-color-blue);
+  box-shadow: var(--shadow-blue);
+}
+
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 25px;
+  font-size: 1.6rem; /* Título maior */
+  text-align: center;
+}
+.modal-content label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500; /* Peso da label */
+  font-size: 0.9rem;
+}
+
+.modal-actions {
+  text-align: right;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color-light);
+  display: flex;
+  flex-wrap: wrap; /* Permite quebrar linha */
+  justify-content: flex-end;
+  gap: 10px;
+}
+body.dark .modal-actions { border-top-color: var(--border-color-dark); }
+body.blue .modal-actions { border-top-color: var(--border-color-blue); }
+
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 2rem; /* Maior */
+  line-height: 1;
+  color: var(--color-muted);
+  cursor: pointer;
+  padding: 5px;
+  transition: color var(--transition-speed);
+}
+.close-btn:hover {
+  color: var(--color-dark);
+}
+body.dark .close-btn { color: #888; }
+body.dark .close-btn:hover { color: var(--text-color-dark); }
+body.blue .close-btn:hover { color: var(--text-color-blue); }
+
+/* Necessário para js/ia.js */
+.hidden {
+  display: none !important;
+}
+/* Responsividade Global */
+@media (max-width: 992px) {
+   /* Mantém o layout flexível, mas ajusta o ponto de quebra se necessário */
+   /* Se ainda quiser empilhar: */
+    .app-container {
+       flex-direction: column;
+       height: auto;
+       overflow: auto; /* Scroll geral */
+   }
+   .main-content-wrapper,
+   .ia-section-wrapper {
+       flex: 1 1 auto;
+       width: 100%;
+       height: auto;
+       overflow-y: visible; /* Sem scroll interno */
+       border-left: none;
+       margin-bottom: 20px; /* Espaço entre seções empilhadas */
+   }
+    .main-content-wrapper { order: 1; } /* Conteúdo principal primeiro */
+    .ia-section-wrapper { order: 2; } /* IA depois */
+}
+
+@media (max-width: 768px) {
+  .section-container {
+    padding: 15px;
+    /* border-radius: 0; */ /* Mantém borda arredondada */
+    margin-left: 5px; /* Pequena margem lateral */
+    margin-right: 5px;
+  }
+  .modal-content {
+      margin: 5% auto;
+      padding: 20px; /* Menor padding */
+      max-width: 95%;
+  }
+  .section-header h2 { font-size: 1.25rem; }
+}
+
+/* Estilos de Impressão (Mantidos) */
+@media print {
+  body {
+    background-color: white !important;
+    color: black !important;
+    height: auto;
+    overflow: visible;
+  }
+  .app-container {
+      display: block;
+      height: auto;
+  }
+  .main-content-wrapper,
+  .ia-section-wrapper,
+  .section-container {
+    width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 10px 0 !important;
+    margin: 10px 0 !important;
+    overflow: visible !important;
+    height: auto !important;
+    background-color: white !important; /* Força fundo branco */
+  }
+   .section-content { max-height: none !important; overflow: visible !important; opacity: 1 !important; visibility: visible !important; } /* Garante que conteúdo recolhido apareça */
+  #themeToggle, .btn, .collapse-btn, .elfsight-app-4d5653aa-2294-4050-b610-37e9694e978b, #notificationContainer, .spinner-container, .modal-overlay, .iframe-wrapper, .ia-buttons, .category-actions, .add-subitem-btn, #tableFormattingTools, .delete-row-btn, .remove-subitem-btn, .remove-task-btn, #addTaskBtn, #clearCompletedTasksBtn {
+    display: none !important;
+  }
+  .section-header {
+      border-bottom: 1px solid #ccc !important;
+      cursor: default;
+  }
+  a::after {
+      content: " [" attr(href) "]";
+      font-size: 0.9em;
+      color: #555;
+  }
+  a[href^="onedrive:"], a[href^="#"] {
+      &::after {
+          content: "";
+      }
+  }
+  /* Garante que a tabela não seja cortada */
+  #tabelaContainer { overflow: visible; }
+  #editableTable { width: 100%; table-layout: fixed; } /* Ajusta tabela para impressão */
+  #editableTable th, #editableTable td { border: 1px solid #999; } /* Borda mais clara */
+
+}

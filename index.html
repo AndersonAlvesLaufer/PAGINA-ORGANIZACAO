@@ -1,545 +1,192 @@
-<!DOCTYPE html> 
-<!-- Declaração do tipo de documento como HTML5 -->
-<html lang="pt-br"> 
-<!-- Elemento raiz do documento com definição de idioma português do Brasil -->
-<head> 
-<!-- Início da seção head que contém metadados e links para recursos externos -->
-  <meta charset="UTF-8" /> 
-  <!-- Define a codificação de caracteres como UTF-8 -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
-  <!-- Configura viewport para responsividade em dispositivos móveis -->
-  <title>Organizador com Ferramentas de IA</title> 
-  <!-- Título da página exibido na aba do navegador -->
-  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
-  <!-- Carrega folha de estilo do Calendly (possivelmente não utilizado no código atual) -->
-  <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript"></script>
-  <!-- Carrega script do Calendly (possivelmente não utilizado no código atual) -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://www.gstatic.com https://*.firebaseio.com https://static.elfsight.com 'unsafe-inline';
+    style-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net 'unsafe-inline';
+    connect-src 'self' wss://*.firebaseio.com https://firestore.googleapis.com https://www.google-analytics.com;
+    frame-src 'self' https://outlook.office365.com https://www.perplexity.ai https://chat.qwen.ai;
+    img-src 'self' data:;
+    font-src 'self' https://cdnjs.cloudflare.com;
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+  ">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Organizador Pessoal Anderson</title> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/dist/index.global.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/notifications.css" />
+  <link rel="stylesheet" href="css/tasks.css" />
+  <link rel="stylesheet" href="css/notes.css" />
+  <link rel="stylesheet" href="css/contracts.css" />
+  <link rel="stylesheet" href="css/calendar.css" />
+  <link rel="stylesheet" href="css/categories.css" />
+  <link rel="stylesheet" href="css/ia.css" />
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/utils.css" />
+  <link rel="stylesheet" href="css/login.css" />
+
+</head>
+<body>
   
-  <!-- Font Awesome e FullCalendar --> 
-  <!-- Comentário indicando próxima seção de recursos -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" /> 
-  <!-- Carrega Font Awesome para ícones -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/dist/index.global.min.css" /> 
-  <!-- Carrega CSS do FullCalendar para o calendário -->
-
-  <!-- Arquivos de estilo CSS --> 
-  <!-- Comentário indicando próxima seção de estilos locais -->
-  <link rel="stylesheet" href="css/global.css" /> 
-  <link rel="stylesheet" href="css/global.css" /> 
-  <!-- Estilos globais da aplicação -->
-  <link rel="stylesheet" href="css/login.css" /> 
-  <!-- Estilos específicos para login (não parece ter seção de login no HTML) -->
-  <link rel="stylesheet" href="css/tasks.css" /> 
-  <!-- Estilos para seção de tarefas -->
-  <link rel="stylesheet" href="css/notes.css" /> 
-  <!-- Estilos para seção de notas -->
-  <link rel="stylesheet" href="css/contracts.css" /> 
-  <!-- Estilos para seção de contratos -->
-  <link rel="stylesheet" href="css/calendar.css" /> 
-  <!-- Estilos para seção de calendário -->
-  <link rel="stylesheet" href="css/categories.css" /> 
-  <!-- Estilos para seção de categorias -->
-  <link rel="stylesheet" href="css/ia.css" /> 
-  <!-- Estilos para seção de IA -->
-  <link rel="stylesheet" href="css/theme.css" /> 
-  <!-- Estilos para alternância de tema -->
-  <link rel="stylesheet" href="css/utils.css" /> 
-  <!-- Estilos utilitários -->
-
-  <!-- Script do FullCalendar --> 
-  <!-- Comentário indicando carregamento do FullCalendar -->
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script> 
-  <!-- Carrega biblioteca FullCalendar -->
+  <div id="notificationContainer" aria-live="assertive"></div>
   
-  <!-- Estilos básicos para o modal de evento --> 
-  <!-- Comentário indicando estilos inline para o modal -->
-  <style> 
-    /* Modal container */
-    /* Estilos para o container do modal */
-    .modal { 
-      display: none;  
-      /* Modal inicia oculto */
-      position: fixed;  
-      /* Posição fixa na tela */
-      z-index: 1000;  
-      /* Garante que fique acima de outros elementos */
-      left: 0;
-      top: 0;
-      width: 100%;  
-      /* Ocupa toda a largura */
-      height: 100%;  
-      /* Ocupa toda a altura */
-      overflow: auto;  
-      /* Habilita scroll se necessário */
-      background-color: rgba(0,0,0,0.4);
-      /* Fundo semi-transparente */
-    }
-    /* Modal content */
-    /* Estilos para o conteúdo do modal */
-    .modal-content { 
-      background-color: #fefefe;
-      margin: 15% auto;  
-      /* Centraliza verticalmente */
-      padding: 20px;
-      border: 1px solid #888;
-      width: 80%;
-      max-width: 400px;
-      border-radius: 4px;
-    }
-    .close { 
-      /* Estilo para o botão de fechar */
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .close:hover, .close:focus { 
-      /* Efeitos hover para o botão de fechar */
-      color: black;
-      text-decoration: none;
-    }
-    /* Estilos dos inputs e botões no modal */
-    /* Estilos para elementos dentro do modal */
-    #eventTitle { 
-      width: 100%;
-      padding: 8px;
-      margin: 10px 0;
-      box-sizing: border-box;
-    }
-    #saveEventBtn, #cancelEventBtn { 
-      /* Estilos para botões do modal */
-      padding: 8px 16px;
-      margin-right: 10px;
-      cursor: pointer;
-    }
-  </style> 
-</head> 
-<!-- Fim da seção head -->
-
-<body> 
-<!-- Início do corpo do documento -->
-  <!-- Conteúdo Principal --> 
-  <!-- Comentário indicando seção principal -->
-  <div id="mainContent" class="main-content-wrapper"> 
-    <!-- Container principal da aplicação -->
-    <!-- Botão de alternância de tema --> 
-    <!-- Comentário para botão de tema -->
-    <button id="themeToggle"><i class="fas fa-moon"></i> Alternar Tema</button> 
-    <!-- Botão para alternar entre temas claro/escuro -->
-
-    <div class="app-container"> 
-      <!-- Container da aplicação -->
-      <div class="main-content"> 
-        <!-- Conteúdo principal -->
-        <!-- Seção de Anotações Rápidas --> 
-        <!-- Comentário para seção de notas -->
-        <div class="notes-section" id="notesSection"> 
-          <!-- Seção de anotações -->
-          <h2>Anotações Rápidas</h2> 
-          <!-- Título da seção -->
-          <textarea id="quickNotes" placeholder="Escreva suas notas aqui..."></textarea> 
-          <!-- Área de texto para notas -->
-          <button id="updateNotesBtn" onclick="updateNotes()">Atualizar</button> 
-          <!-- Botão para atualizar notas (função definida em notes.js) -->
-        </div>
-
-        <!-- Seção de Tarefas --> 
-        <!-- Comentário para seção de tarefas -->
-        <div class="tasks-section" id="tasksSection"> 
-          <!-- Seção de tarefas -->
-          <h2>Minhas Tarefas</h2> 
-          <!-- Título da seção -->
-          <input type="text" id="taskInput" placeholder="Digite uma nova tarefa..." /> 
-          <!-- Input para adicionar novas tarefas -->
-          <ul class="tasks-list" id="tasksList"></ul> 
-          <!-- Lista onde as tarefas serão renderizadas dinamicamente -->
-        </div>
-
-        <!-- Seção de Contratos --> 
-        <!-- Comentário para seção de contratos -->
-        <div class="contracts-section" id="contractsSection"> 
-          <!-- Seção de contratos -->
-          <h2>Contratos</h2> 
-          <!-- Título da seção -->
-          <div id="tableControls"> 
-            <!-- Controles da tabela de contratos -->
-            <button onclick="addRow()">Adicionar Linha</button> 
-            <!-- Botão para adicionar linha (função em contracts.js) -->
-            <button onclick="removeRow()">Remover Linha</button> 
-            <!-- Botão para remover linha (função em contracts.js) -->
-            <button onclick="saveTableData()" id="updateTableBtn" style="display: none;">Salvar Alterações</button> 
-            <!-- Botão para salvar alterações (inicialmente oculto) -->
-          </div>
-          <div id="tableFormattingTools" class="formatting-tools" data-activeCell=""> 
-            <!-- Ferramentas de formatação da tabela -->
-            <button onclick="applyBold()">Negrito (Ctrl+B)</button> 
-            <!-- Botão para aplicar negrito -->
-            <button onclick="applyRed()">Vermelho (Ctrl+R)</button> 
-            <!-- Botão para aplicar cor vermelha -->
-            <button onclick="applyBlue()">Azul (Ctrl+L)</button> 
-            <!-- Botão para aplicar cor azul -->
-            <button onclick="applyBlack()">Preto (Ctrl+K)</button> 
-            <!-- Botão para aplicar cor preta -->
-            <button onclick="markImportant()">Destacar</button> 
-            <!-- Botão para destacar células -->
-          </div>
-          <div id="tabelaContainer"> 
-            <!-- Container da tabela editável -->
-            <table border="1" id="editableTable" style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; margin-top: 10px;"> 
-              <!-- Tabela editável com estilos inline -->
-              <thead style="background-color: #4a90e2; color: white; font-weight: bold;"> 
-                <!-- Cabeçalho da tabela -->
-                <tr> 
-                  <!-- Linha de cabeçalho -->
-                  <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">SEI</th> 
-                  <!-- Coluna SEI -->
-                  <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">CONTRATO</th> 
-                  <!-- Coluna CONTRATO -->
-                  <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">EMPRESA</th> 
-                  <!-- Coluna EMPRESA -->
-                  <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">PRORROGAÇÃO</th> 
-                  <!-- Coluna PRORROGAÇÃO -->
-                  <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">PENDÊNCIAS</th> 
-                  <!-- Coluna PENDÊNCIAS -->
-                  <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">AÇÕES</th> 
-                  <!-- Coluna AÇÕES -->
-                </tr>
-              </thead>
-              <tbody> 
-                <!-- Corpo da tabela (preenchido dinamicamente) -->
-                <!-- As linhas serão renderizadas dinamicamente a partir do Firestore --> 
-                <!-- Comentário explicativo -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Seção de Categorias --> 
-        <!-- Comentário para seção de categorias -->
-        <div class="container" id="buttonContainer"> 
-          <!-- Container de categorias -->
-          <!-- Botão pequeno para adicionar categoria --> 
-          <!-- Comentário para botão de adição -->
-          <button id="addCategoryBtn" class="small-add-category-btn" onclick="addCategoryPrompt()" title="Adicionar categoria"> 
-            <!-- Botão para adicionar nova categoria -->
-            <i class="fas fa-plus"></i> 
-            <!-- Ícone de adição -->
-          </button>
-          <!-- Categorias estáticas --> 
-          <!-- Comentário para categorias pré-definidas -->
-          
-          <!-- Categoria Direito -->
-          <div class="category" data-id="card-direito" data-tags="direito" draggable="true"> 
-            <!-- Container da categoria -->
-            <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button> 
-            <!-- Botão para fixar categoria -->
-            <button class="remove-category-btn" title="Remover categoria"><i class="fas fa-times"></i></button> 
-            <!-- Botão para remover categoria -->
-            <h3>Direito</h3> 
-            <!-- Título da categoria -->
-            <p>Documentos jurídicos e pareceres</p> 
-            <!-- Descrição da categoria -->
-            <div class="subitems-list" data-subitem-id="card-direito"></div> 
-            <!-- Container para subitens -->
-            <button class="add-subitem-btn">+ Adicionar Subitem</button> 
-            <!-- Botão para adicionar subitens -->
-          </div>
-          
-          <!-- Categoria Pessoal -->
-          <div class="category" data-id="card-pessoal" data-tags="pessoal" draggable="true"> 
-            <!-- Mesma estrutura para categoria pessoal -->
-            <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
-            <button class="remove-category-btn" title="Remover categoria"><i class="fas fa-times"></i></button>
-            <h3>Pessoal</h3>
-            <p>Documentos e fotos pessoais</p>
-            <a href="onedrive://fotos_e_documentos" target="_blank">Fotos e Documentos</a> 
-            <!-- Link para OneDrive -->
-            <div class="subitems-list" data-subitem-id="card-pessoal"></div>
-            <button class="add-subitem-btn">+ Adicionar Subitem</button>
-          </div>
-          
-          <!-- Categoria Economia -->
-          <div class="category" data-id="card-economia" data-tags="economia" draggable="true"> 
-            <!-- Categoria de economia -->
-            <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
-            <button class="remove-category-btn" title="Remover categoria"><i class="fas fa-times"></i></button>
-            <h3>Economia/Investimentos</h3>
-            <p>Recursos financeiros</p>
-            <a href="onedrive://indice_de_economia" target="_blank">Índice de Economia</a>
-            <div class="subitems-list" data-subitem-id="card-economia"></div>
-            <button class="add-subitem-btn">+ Adicionar Subitem</button>
-          </div>
-          
-          <!-- Categoria Trabalho TJ -->
-          <div class="category" data-id="card-trabalho-tj" data-tags="trabalho-tj" draggable="true"> 
-            <!-- Categoria de trabalho -->
-            <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
-            <button class="remove-category-btn" title="Remover categoria"><i class="fas fa-times"></i></button>
-            <h3>Trabalho – TJ</h3>
-            <p>Documentos do Tribunal de Justiça</p>
-            <a href="onedrive://trabalho_tj" target="_blank">Documentos TJ</a>
-            <div class="subitems-list" data-subitem-id="card-trabalho-tj"></div>
-            <button class="add-subitem-btn">+ Adicionar Subitem</button>
-          </div>
-          
-          <!-- Categoria Ferramentas -->
-          <div class="category" data-id="card-ferramentas" data-tags="ferramentas" draggable="true"> 
-            <!-- Categoria de ferramentas -->
-            <button class="pin-btn" title="Fixar categoria"><i class="fas fa-thumbtack"></i></button>
-            <button class="remove-category-btn" title="Remover categoria"><i class="fas fa-times"></i></button>
-            <h3>Ferramentas</h3>
-            <p>Ferramentas e utilitários</p>
-            <a href="onedrive://ferramentas" target="_blank">Ferramentas</a>
-            <div class="subitems-list" data-subitem-id="card-ferramentas"></div>
-            <button class="add-subitem-btn">+ Adicionar Subitem</button>
-          </div>
-        </div>
-
-        <!-- Seção do Calendário --> 
-        <!-- Comentário para seção de calendário -->
-        <div class="calendar-section" id="calendarSection"> 
-          <!-- Seção do calendário -->
-          <h2>Meu Calendário</h2> 
-          <!-- Título da seção -->
-          <!-- Contêiner para o FullCalendar (após a adaptação) --> 
-          <!-- Comentário explicativo -->
-          <div id="calendar"></div> 
-          <!-- Container onde o FullCalendar será renderizado -->
-          
-          <!-- Calendário do Outlook (iframe original, se desejar manter ambos) --> 
-          <!-- Comentário explicativo -->
-          <style> 
-            /* Estilos para o container do calendário do Outlook */
-            .calendar-container { 
-              width: 100%;
-              height: 600px;
-              border: none;
-            }
-          </style>
-          <h3>Calendário do Outlook</h3> 
-          <!-- Título para o iframe do Outlook -->
-          <iframe 
-            class="calendar-container"
-            src="https://outlook.office365.com/owa/calendar/8bbf2fe3a5834a639684cefcb3eed24f@tjpr.jus.br/abba35aa97424e85915d05f8e59c55742205299517638162024/calendar.html"
-            frameborder="0"
-            scrolling="no"> 
-            <!-- Iframe com calendário do Outlook -->
-          </iframe>
-        </div>
-
-        <!-- Seção de Ferramentas de IA --> 
-        <!-- Comentário para seção de IA -->
-        <div id="secaoIA"> 
-          <!-- Container da seção de IA -->
-          <h2>Ferramentas de IA</h2> 
-          <!-- Título da seção -->
-          <div class="ia-buttons"> 
-            <!-- Container dos botões de IA -->
-            <button class="btnIA" onclick="mostrarIA('chatgpt', this)" title="Abrir ChatGPT">ChatGPT</button> 
-            <!-- Botão para ChatGPT -->
-            <button class="btnIA" onclick="mostrarIA('gemini', this)" title="Abrir Gemini">Gemini</button> 
-            <!-- Botão para Gemini -->
-            <button class="btnIA" onclick="mostrarIA('perplexity', this)" title="Abrir Perplexity">Perplexity</button> 
-            <!-- Botão para Perplexity -->
-            <button class="btnIA" onclick="mostrarIA('copilot', this)" title="Abrir Copilot">Copilot</button> 
-            <!-- Botão para Copilot -->
-            <button class="btnIA" onclick="mostrarIA('deepseek', this)" title="Abrir DeepSeek">DeepSeek</button> 
-            <!-- Botão para DeepSeek -->
-            <button class="btnIA" onclick="mostrarIA('claude', this)" title="Abrir Claude">Claude</button> 
-            <!-- Botão para Claude -->
-            <button class="btnIA" onclick="mostrarIA('grok', this)" title="Abrir Grok">Grok</button> 
-            <!-- Botão para Grok -->
-            <button class="btnIA" onclick="mostrarIA('lechat', this)" title="Abrir Le Chat">Le Chat</button> 
-            <!-- Botão para Le Chat -->
-            <button class="btnIA" onclick="mostrarIA('sabia', this)" title="Abrir Sabia">Sabia</button> 
-            <!-- Botão para Sabia -->
-            <button class="btnIA" onclick="mostrarIA('qwenchat', this)" title="Abrir Qwen">Qwen</button> 
-            <!-- Botão para Qwen -->
-            <button class="btnIA" onclick="mostrarIA('iadod', this)" title="Abrir Iadod">Iadod</button> 
-            <!-- Botão para Iadod -->
-          </div>
-          <div id="iframesContainer"> 
-            <!-- Container para iframes de IA -->
-            <div class="iframe-wrapper"> 
-              <!-- Wrapper para iframe do Perplexity -->
-              <h3>Perplexity</h3> 
-              <!-- Título do iframe -->
-              <iframe src="https://www.perplexity.ai/" title="Perplexity" loading="lazy" style="display: block;"></iframe> 
-              <!-- Iframe do Perplexity com lazy loading -->
-            </div>
-            <div class="iframe-wrapper"> 
-              <!-- Wrapper para iframe do Qwen -->
-              <h3>Qwen</h3> 
-              <!-- Título do iframe -->
-              <iframe src="https://chat.qwen.ai/" title="Qwen" loading="lazy" style="display: block;"></iframe> 
-              <!-- Iframe do Qwen com lazy loading -->
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  <!-- Modal para criação/edição de eventos --> 
-  <!-- Comentário para o modal de eventos -->
-  <div id="eventModal" class="modal"> 
-    <!-- Modal para criar/editar eventos -->
-    <div class="modal-content"> 
-      <!-- Conteúdo do modal -->
-      <span id="closeEventModal" class="close">&times;</span> 
-      <!-- Botão para fechar o modal -->
-      <h2 id="modalTitle">Novo Evento</h2> 
-      <!-- Título do modal -->
-      <input type="text" id="eventTitle" placeholder="Título do evento" /> 
-      <!-- Input para título do evento -->
-      <div style="text-align: right; margin-top: 20px;"> 
-        <!-- Container dos botões do modal -->
-        <button id="saveEventBtn">Salvar</button> 
-        <!-- Botão para salvar evento -->
-        <button id="cancelEventBtn">Cancelar</button> 
-        <!-- Botão para cancelar -->
-      </div>
-    </div>
+  <div id="loginScreen" class="login-screen">
+    <h2>Login</h2>
+  
+    <input type="email" id="email" placeholder="Seu e-mail" /> 
+  
+    <input type="password" id="password" placeholder="Sua senha" /> 
+  
+    <button id="loginButton">Entrar</button>  
+    <p id="loginMessage"></p> 
+  
   </div>
+  
+  <header class="main-header">
+    <h1 id="main-app-title">PÁGINA PESSOAL DE ORGANIZAÇÃO DO ANDERSON</h1>
+  </header>
 
-<!-- Elfsight WhatsApp Chat | Untitled WhatsApp Chat --> 
-<!-- Comentário para widget do WhatsApp -->
-<script src="https://static.elfsight.com/platform/platform.js" async></script> 
-<!-- Script do Elfsight para chat do WhatsApp -->
-<div class="elfsight-app-4d5653aa-2294-4050-b610-37e9694e978b" data-elfsight-app-lazy></div> 
-<!-- Container para o widget do WhatsApp -->
+  <div class="app-container">
 
-  <!-- Scripts (ordem de carregamento) --> 
-  <!-- Comentário indicando seção de scripts -->
-  <script type="module" src="js/firebase.js"></script> 
-  <!-- Script de configuração do Firebase -->
-<script type="module" src="js/auth.js"></script> 
-<!-- Script de autenticação -->
-<script type="module" src="js/theme.js"></script> 
-<!-- Script para alternância de tema -->
-<script type="module" src="js/notes.js"></script> 
-<!-- Script para funcionalidade de notas -->
-<script type="module" src="js/tasks.js"></script> 
-<!-- Script para funcionalidade de tarefas -->
-<script type="module" src="js/categories.js"></script> 
-<!-- Script para funcionalidade de categorias -->
-<script type="module" src="js/subitems.js"></script> 
-<!-- Script para funcionalidade de subitens -->
-<script type="module" src="js/contracts.js"></script> 
-<!-- Script para funcionalidade de contratos -->
-<script type="module" src="js/calendar.js"></script> 
-<!-- Script para funcionalidade de calendário -->
-<script type="module" src="js/ia.js"></script> 
-<!-- Script para funcionalidade de IA -->
-<script type="module" src="js/utils.js"></script> 
-<!-- Script com funções utilitárias -->
+    <div id="mainContent" class="main-content-wrapper">
+        <button id="themeToggle" aria-label="Alternar tema">
+            <i class="fas fa-moon"></i> <span class="theme-toggle-text">Alternar Tema</span>
+        </button>
 
-<script type="module"> 
-// Script para adicionar subitens estáticos à categoria Trabalho-TJ
-// Adiciona subitens estáticos à categoria Trabalho-TJ 
-// Comentário explicativo
-document.addEventListener('DOMContentLoaded', function() { 
-  // Aguarda o carregamento do DOM
-  // Função para adicionar os subitens estáticos 
-  // Comentário para função
-  function addStaticSubitems() { 
-    // Função que adiciona subitens estáticos
-    // Encontra a categoria "Trabalho-TJ" 
-    // Comentário explicativo
-    const tjCategory = document.querySelector('.category[data-id="card-trabalho-tj"]'); 
-    // Seleciona a categoria pelo atributo data-id
-    if (!tjCategory) { 
-      // Verifica se a categoria existe
-      console.error('Categoria Trabalho-TJ não encontrada'); 
-      // Log de erro se não encontrar
-      return; 
-      // Sai da função
-    } 
+        <div class="section-container notes-section" id="notesSection">
+            <div class="section-header" data-controls="notesContent">
+                <h2>Anotações Rápidas</h2>
+                <button class="collapse-btn" aria-expanded="true" aria-controls="notesContent"><i class="fas fa-chevron-up"></i></button>
+            </div>
+            <div id="notesContent" class="section-content">
+                <textarea id="quickNotes" placeholder="Escreva suas notas aqui..." aria-label="Anotações rápidas"></textarea>
+                <button id="updateNotesBtn" class="btn btn-secondary">Atualizar</button>
+                <div class="spinner-container" id="notesSpinner" style="display: none;"><div class="spinner"></div></div>
+            </div>
+        </div>
 
-    // Encontra a lista de subitens na categoria 
-    // Comentário explicativo
-    const subitemsList = tjCategory.querySelector('.subitems-list'); 
-    // Seleciona a lista de subitens
-    if (!subitemsList) { 
-      // Verifica se a lista existe
-      console.error('Lista de subitens não encontrada na categoria Trabalho-TJ'); 
-      // Log de erro
-      return; 
-      // Sai da função
-    } 
+        <div class="section-container tasks-section" id="tasksSection">
+             <div class="section-header" data-controls="tasksContent">
+                 <h2>Minhas Tarefas</h2>
+                 <button class="collapse-btn" aria-expanded="true" aria-controls="tasksContent"><i class="fas fa-chevron-up"></i></button>
+             </div>
+             <div id="tasksContent" class="section-content">
+                <div class="task-input-container">
+                    <input type="text" id="taskInput" placeholder="Digite uma nova tarefa..." aria-label="Nova tarefa" />
+                    <input type="date" id="taskDueDate" aria-label="Data de vencimento" class="task-date-input">
+                    <select id="taskPriority" aria-label="Prioridade da tarefa" class="task-priority-select"> <option value="medium">Média</option> <option value="low">Baixa</option> <option value="high">Alta</option> </select>
+                    <button id="addTaskBtn" class="btn btn-primary" aria-label="Adicionar tarefa"><i class="fas fa-plus"></i></button>
+                </div>
+                <div class="task-controls"> <button id="clearCompletedTasksBtn" class="btn btn-danger btn-small">Limpar Concluídas</button> </div>
+                <ul class="tasks-list" id="tasksList"></ul>
+                <div class="spinner-container" id="tasksSpinner" style="display: none;"><div class="spinner"></div></div>
+             </div>
+        </div>
 
-    // Adiciona os subitens estáticos 
-    // Comentário explicativo
-    const subitems = [ 
-      // Array com objetos contendo subitens pré-definidos
-      { name: 'SEI', url: 'https://sei.tjpr.jus.br/sei/' }, 
-      // Subitem SEI com URL
-      { name: 'Boletim Interno', url: 'https://www.tjpr.jus.br/group/guest/boletim-interno' } 
-      // Subitem Boletim Interno com URL
-    ]; 
+        <div class="section-container contracts-section" id="contractsSection">
+             <div class="section-header" data-controls="contractsContent">
+                 <h2>Contratos</h2>
+                 <button class="collapse-btn" aria-expanded="true" aria-controls="contractsContent"><i class="fas fa-chevron-up"></i></button>
+             </div>
+             <div id="contractsContent" class="section-content">
+                <div id="tableControls">
+                    <button id="addRowBtn" class="btn btn-primary">Adicionar Linha</button>
+                    <button id="removeRowBtn" class="btn btn-danger">Remover Última Linha</button>
+                    <button id="saveTableBtn" class="btn btn-success" style="display: none;">Salvar Alterações</button>
+                </div>
+                <div id="tableFormattingTools" class="formatting-tools">
+                    <button id="formatBoldBtn" class="btn btn-secondary btn-small" aria-label="Negrito"><i class="fas fa-bold"></i></button>
+                    <button id="formatRedBtn" class="btn btn-secondary btn-small" aria-label="Vermelho"><i class="fas fa-palette" style="color: red;"></i></button>
+                    <button id="formatBlueBtn" class="btn btn-secondary btn-small" aria-label="Azul"><i class="fas fa-palette" style="color: blue;"></i></button>
+                    <button id="formatBlackBtn" class="btn btn-secondary btn-small" aria-label="Preto"><i class="fas fa-palette"></i></button>
+                    <button id="formatHighlightBtn" class="btn btn-secondary btn-small" aria-label="Destacar"><i class="fas fa-highlighter"></i></button>
+                </div>
+                <div id="tabelaContainer">
+                    <table border="1" id="editableTable">
+                        <thead><tr><th>SEI</th><th>CONTRATO</th><th>EMPRESA</th><th>PRORROGAÇÃO</th><th>PENDÊNCIAS</th><th>AÇÕES</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                    <div class="spinner-container" id="contractsSpinner" style="display: none;"><div class="spinner"></div></div>
+                </div>
+             </div>
+        </div>
 
-    subitems.forEach(item => { 
-      // Itera sobre cada subitem
-      // Cria o elemento de subitem 
-      // Comentário explicativo
-      const subitemDiv = document.createElement('div'); 
-      // Cria div para o subitem
-      subitemDiv.className = 'subitem'; 
-      // Adiciona classe
-      
-      // Cria o link 
-      // Comentário explicativo
-      const link = document.createElement('a'); 
-      // Cria elemento de link
-      link.href = item.url; 
-      // Define href do link
-      link.target = '_blank'; 
-      // Abre em nova aba
-      link.textContent = item.name; 
-      // Define texto do link
-      
-      // Cria o botão de remover (oculto para os estáticos) 
-      // Comentário explicativo
-      const removeBtn = document.createElement('button'); 
-      // Cria botão de remover
-      removeBtn.className = 'remove-subitem-btn'; 
-      // Adiciona classe
-      removeBtn.style.display = 'none'; 
-      // Oculta o botão (subitens estáticos não podem ser removidos)
-      removeBtn.innerHTML = '<i class="fas fa-times"></i>'; 
-      // Adiciona ícone ao botão
-      
-      // Adiciona os elementos ao subitem 
-      // Comentário explicativo
-      subitemDiv.appendChild(link); 
-      // Adiciona link ao subitem
-      subitemDiv.appendChild(removeBtn); 
-      // Adiciona botão ao subitem
-      
-      // Adiciona o subitem à lista 
-      // Comentário explicativo
-      subitemsList.appendChild(subitemDiv); 
-      // Adiciona subitem à lista
-    }); 
-    
-    console.log('Subitens estáticos adicionados à categoria Trabalho-TJ'); 
-    // Log de sucesso
-  } 
+        <div class="section-container categories-section" id="categoriesContainerSection">
+             <div class="section-header" data-controls="categoriesContent">
+                 <h2>Categorias</h2>
+                 <button class="collapse-btn" aria-expanded="true" aria-controls="categoriesContent"><i class="fas fa-chevron-up"></i></button>
+             </div>
+             <div id="categoriesContent" class="section-content">
+                 <div class="container categories-grid" id="buttonContainer">
+                     <button id="addCategoryBtn" class="small-add-category-btn" title="Adicionar categoria" aria-label="Adicionar categoria"><i class="fas fa-plus"></i></button>
+                 </div>
+                 <div class="spinner-container" id="categoriesSpinner" style="display: none;"><div class="spinner"></div></div>
+             </div>
+        </div>
 
-  // Verifica se as categorias já foram carregadas 
-  // Comentário explicativo
-  if (document.querySelector('.category[data-id="card-trabalho-tj"]')) { 
-    // Verifica se a categoria já está no DOM
-    addStaticSubitems(); 
-    // Chama a função se estiver pronta
-  } else { 
-    // Caso contrário
-    // Espera um pouco para as categorias serem renderizadas pelo categories.js 
-    // Comentário explicativo
-    setTimeout(addStaticSubitems, 1000); 
-    // Agenda a função para executar após 1 segundo
-  } 
-}); 
-</script> 
-</body> 
+        <div class="section-container calendar-section" id="calendarSection">
+             <div class="section-header" data-controls="calendarContent">
+                 <h2>Meu Calendário (FullCalendar)</h2>
+                 <button class="collapse-btn" aria-expanded="true" aria-controls="calendarContent"><i class="fas fa-chevron-up"></i></button>
+             </div>
+             <div id="calendarContent" class="section-content">
+                 <div id="calendar"></div>
+                 <div class="spinner-container" id="calendarSpinner" style="display: none;"><div class="spinner"></div></div>
+             </div>
+             <div class="outlook-calendar-wrapper section-container" id="outlookCalendarSection">
+                 <div class="section-header" data-controls="outlookCalendarContent">
+                     <h3>Calendário do Outlook</h3>
+                     <button class="collapse-btn" aria-expanded="true" aria-controls="outlookCalendarContent"><i class="fas fa-chevron-up"></i></button>
+                 </div>
+                 <div id="outlookCalendarContent" class="section-content">
+                     <iframe class="outlook-calendar-container" src="https://outlook.office365.com/owa/calendar/8bbf2fe3a5834a639684cefcb3eed24f@tjpr.jus.br/abba35aa97424e85915d05f8e59c55742205299517638162024/calendar.html" frameborder="0" scrolling="no" title="Calendário do Outlook"></iframe>
+                 </div>
+             </div>
+        </div>
+
+    </div> <div id="secaoIA" class="ia-section-wrapper">
+         <h2>Ferramentas de IA</h2>
+         <div class="ia-buttons">
+            <button class="btnIA btn btn-primary" data-url="https://chat.openai.com/" title="Abrir ChatGPT">ChatGPT</button>
+            <button class="btnIA btn btn-primary" data-url="https://gemini.google.com/" title="Abrir Gemini">Gemini</button>
+            <button class="btnIA btn btn-primary" data-url="https://www.perplexity.ai/" title="Abrir Perplexity">Perplexity</button>
+            <button class="btnIA btn btn-primary" data-url="https://copilot.microsoft.com/" title="Abrir Copilot">Copilot</button>
+            <button class="btnIA btn btn-primary" data-url="https://chat.deepseek.com/" title="Abrir DeepSeek">DeepSeek</button>
+            <button class="btnIA btn btn-primary" data-url="https://claude.ai/chat" title="Abrir Claude">Claude</button>
+            <button class="btnIA btn btn-primary" data-url="https://grok.x.ai/" title="Abrir Grok">Grok</button>
+            <button class="btnIA btn btn-primary" data-url="https://chat.mistral.ai/" title="Abrir Le Chat">Le Chat</button>
+            <button class="btnIA btn btn-primary" data-url="https://chat.maritaca.ai/" title="Abrir Sabia">Sabia</button>
+            <button class="btnIA btn btn-primary" data-url="https://chat.qwen.ai/" title="Abrir Qwen">Qwen</button>
+            <button class="btnIA btn btn-primary" data-url="https://www.iadod.com.br/" title="Abrir Iadod">Iadod</button>
+         </div>
+         <!--
+         <div id="iframesContainer">
+             <div class="iframe-wrapper"><h3>Perplexity</h3><iframe src="https://www.perplexity.ai/" title="Perplexity" loading="lazy"></iframe></div>
+             <div class="iframe-wrapper"><h3>Qwen</h3><iframe src="https://chat.qwen.ai/" title="Qwen" loading="lazy"></iframe></div>-->
+         </div>
+    </div> </div> <div id="eventModal" class="modal-overlay"> <div class="modal-content"> <button id="closeEventModal" class="close-btn" aria-label="Fechar">&times;</button> <h2 id="modalTitle">Novo Evento</h2> <label for="eventTitleInput">Título:</label> <input type="text" id="eventTitleInput" /> <label for="eventDescriptionInput">Descrição:</label> <textarea id="eventDescriptionInput" rows="3"></textarea> <label for="eventLocationInput">Localização:</label> <input type="text" id="eventLocationInput" /> <div class="modal-actions"> <button id="saveEventBtn" class="btn btn-success">Salvar</button> <button id="deleteEventBtn" class="btn btn-danger" style="display: none;">Excluir</button> <button id="cancelEventBtn" class="btn btn-secondary">Cancelar</button> </div> <div class="spinner-container" id="eventModalSpinner" style="display: none;"><div class="spinner"></div></div> </div> </div>
+  <div id="subitemModal" class="modal-overlay"> <div class="modal-content"> <button id="closeSubitemModal" class="close-btn" aria-label="Fechar">&times;</button> <h2 id="subitemModalTitle">Adicionar Subitem</h2> <input type="hidden" id="subitemCategoryId"> <input type="hidden" id="subitemId"> <label for="subitemNameInput">Nome:</label> <input type="text" id="subitemNameInput" required> <label for="subitemUrlInput">URL:</label> <input type="url" id="subitemUrlInput" required> <div class="modal-actions"> <button id="saveSubitemBtn" class="btn btn-success">Salvar</button> <button id="cancelSubitemBtn" class="btn btn-secondary">Cancelar</button> </div> <div class="spinner-container" id="subitemModalSpinner" style="display: none;"><div class="spinner"></div></div> </div> </div>
+  <div id="categoryModal" class="modal-overlay"> <div class="modal-content"> <button id="closeCategoryModal" class="close-btn" aria-label="Fechar">&times;</button> <h2 id="categoryModalTitle">Nova Categoria</h2> <input type="hidden" id="categoryId"> <label for="categoryNameInput">Nome:</label> <input type="text" id="categoryNameInput" required> <label for="categoryDescriptionInput">Descrição:</label> <input type="text" id="categoryDescriptionInput"> <label for="categoryLinkInput">Link Principal:</label> <input type="url" id="categoryLinkInput"> <div class="modal-actions"> <button id="saveCategoryBtn" class="btn btn-success">Salvar</button> <button id="cancelCategoryBtn" class="btn btn-secondary">Cancelar</button> </div> <div class="spinner-container" id="categoryModalSpinner" style="display: none;"><div class="spinner"></div></div> </div> </div>
+  <script src="https://static.elfsight.com/platform/platform.js" data-use-service-core defer></script>
+  <div class="elfsight-app-4d5653aa-2294-4050-b610-37e9694e978b" data-elfsight-app-lazy></div>
+<script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/firebase.js"></script>
+  <script type="module" src="js/utils.js"></script>
+  <script type="module" src="js/theme.js"></script>
+  <script type="module" src="js/notes.js"></script>
+  <script type="module" src="js/tasks.js"></script>
+  <script type="module" src="js/subitems.js"></script>
+  <script type="module" src="js/categories.js"></script>
+  <script type="module" src="js/calendar.js"></script>
+  <script type="module" src="js/contracts.js"></script>
+  <script type="module" src="js/ia.js"></script>
+
+</body>
 </html>

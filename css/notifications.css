@@ -1,0 +1,70 @@
+/* css/notifications.css */
+
+/* Container para empilhar notificações */
+#notificationContainer {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2000; /* Acima de outros elementos */
+  display: flex;
+  flex-direction: column; /* Empilha verticalmente */
+  gap: 10px; /* Espaço entre notificações */
+  max-width: 350px; /* Largura máxima */
+}
+
+/* Estilo base da notificação individual */
+.notification {
+  padding: 12px 20px;
+  border-radius: var(--border-radius);
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  opacity: 0; /* Começa invisível */
+  transform: translateX(100%); /* Começa fora da tela (direita) */
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  cursor: default; /* Não parece clicável */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Ícone opcional na notificação */
+.notification i {
+  font-size: 1.2em;
+}
+
+/* Animação de entrada */
+.notification.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Animação de saída (adicionada via JS antes de remover) */
+.notification.fade-out {
+  opacity: 0;
+  transform: translateX(100%);
+}
+
+/* Tipos de Notificação */
+.notification-success {
+  background-color: var(--color-success);
+}
+.notification-error {
+  background-color: var(--color-danger);
+}
+.notification-warning {
+  background-color: var(--color-warning);
+  color: var(--color-dark); /* Melhor contraste no amarelo */
+}
+.notification-info {
+  background-color: var(--color-info);
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+  #notificationContainer {
+    right: 10px;
+    bottom: 10px;
+    left: 10px; /* Ocupa quase toda a largura */
+    max-width: none;
+  }
+}
