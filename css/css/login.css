@@ -1,0 +1,15 @@
+.login-screen {
+  max-width: 300px;
+  margin: 60px auto;
+  padding: 20px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  background: #fefefe;
+  text-align: center;
+}
+.login-screen input {
+  display: block;
+  margin: 10px auto;
+  width: 90%;
+  padding: 8px;
+}

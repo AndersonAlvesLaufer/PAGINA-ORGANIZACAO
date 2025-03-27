@@ -1,0 +1,141 @@
+/* css/contracts.css */
+
+/* Seção de Contratos - Usa .section-container de global.css */
+
+/* Tabela Editável */
+#editableTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-family: var(--font-family);
+  table-layout: auto;
+  border: 1px solid var(--border-color-light);
+}
+
+/* Cabeçalho da Tabela */
+#editableTable thead {
+  background-color: var(--color-secondary);
+  color: white;
+  font-weight: bold;
+}
+
+/* Células da Tabela (th, td) */
+#editableTable th,
+#editableTable td {
+  padding: 10px 14px;
+  border: 1px solid var(--border-color-light);
+  text-align: left;
+  vertical-align: top;
+  transition: background-color var(--transition-speed);
+}
+body.dark #editableTable th,
+body.dark #editableTable td { border-color: var(--border-color-dark); }
+body.blue #editableTable th,
+body.blue #editableTable td { border-color: var(--border-color-blue); }
+
+
+/* Linhas - Efeito Zebrado */
+#editableTable tbody tr:nth-child(even) { background-color: var(--section-bg-light); }
+#editableTable tbody tr:nth-child(odd) { background-color: #fdfdfd; }
+
+body.dark #editableTable tbody tr:nth-child(even) { background-color: var(--section-bg-dark); }
+body.dark #editableTable tbody tr:nth-child(odd) { background-color: #2c2c2c; }
+body.blue #editableTable tbody tr:nth-child(even) { background-color: var(--section-bg-blue); }
+body.blue #editableTable tbody tr:nth-child(odd) { background-color: #eaf4ff; }
+
+/* Células Editáveis */
+#editableTable td[contenteditable="true"] {
+  cursor: text;
+  min-height: 22px;
+}
+#editableTable td[contenteditable="true"]:hover {
+  background-color: rgba(74, 144, 226, 0.1);
+}
+#editableTable td[contenteditable="true"]:focus {
+  outline: 2px solid var(--color-primary);
+  background-color: #fff;
+}
+body.dark #editableTable td[contenteditable="true"]:focus {
+    background-color: var(--bg-color-dark);
+    outline-color: var(--color-secondary);
+}
+body.blue #editableTable td[contenteditable="true"]:focus {
+    background-color: #fff;
+}
+
+/* Input de Data (Prorrogação) */
+#editableTable input.prorroga-input {
+    margin-bottom: 0;
+    width: auto;
+    min-width: 140px;
+    padding: 6px 8px;
+    font-size: 0.9rem;
+}
+
+/* Coluna Ações */
+#editableTable td:last-child {
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Botão Deletar na linha */
+#editableTable .delete-row-btn {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    line-height: 1;
+}
+
+/* Controles da Tabela (Acima) */
+#tableControls,
+#tableFormattingTools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+#tableFormattingTools {
+    border: 1px dashed var(--border-color-light);
+    padding: 8px;
+    border-radius: var(--border-radius);
+}
+body.dark #tableFormattingTools { border-color: var(--border-color-dark); }
+body.blue #tableFormattingTools { border-color: var(--border-color-blue); }
+
+
+
+/* Mensagens na Tabela */
+#editableTable .empty-message,
+#editableTable .error-message {
+    text-align: center;
+    color: var(--color-muted);
+    font-style: italic;
+    padding: 20px;
+}
+#editableTable .error-message {
+    color: var(--color-danger);
+    font-style: normal;
+}
+
+/* Regra vazia removida que estava próxima a Ln 107 */
+
+/* Responsividade da Tabela */
+@media (max-width: 768px) {
+  #tabelaContainer {
+    overflow-x: auto;
+    width: 100%;
+  }
+  #editableTable {
+    width: max-content;
+    min-width: 100%;
+  }
+  #tableControls,
+  #tableFormattingTools {
+    flex-direction: column;
+    align-items: stretch;
+  }
+   #tableControls .btn,
+   #tableFormattingTools .btn {
+       width: 100%;
+       justify-content: center;
+   }
+}
